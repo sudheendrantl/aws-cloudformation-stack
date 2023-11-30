@@ -1,0 +1,52 @@
+# WILL NOT EXECUTE!
+
+version: 0.2
+
+#env:
+  #variables:
+     # key: "value"
+     # key: "value"
+  #parameter-store:
+     # key: "value"
+     # key: "value"
+  #secrets-manager:
+     # key: secret-id:json-key:version-stage:version-id
+     # key: secret-id:json-key:version-stage:version-id
+  #exported-variables:
+     # - variable
+     # - variable
+  #git-credential-helper: yes
+#batch:
+  #fast-fail: true
+  #build-list:
+  #build-matrix:
+  #build-graph:
+phases:
+  install:
+    commands:
+      # - command
+      # - command
+  pre_build:
+    commands:
+      # - command
+      # - command
+  build:
+    commands:
+      # - command
+      # - command
+  post_build:
+    commands:
+      # - command
+      # - command
+artifacts:
+  files:
+    - appspec.yml
+    - raw_data.zip
+    - anomaly_detection.zip
+    - scripts/*
+  #name: $(date +%Y-%m-%d)
+  #discard-paths: yes
+  #base-directory: location
+#cache:
+  #paths:
+    # - paths
