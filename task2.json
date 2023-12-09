@@ -2,71 +2,71 @@
 
     "AWSTemplateFormatVersion": "2010-09-09",
 
-    "Description": "EC2, Kinesis Data Stream, Dynamo DB, SNS, S3 and Lambda creation (v11)",
+    "Description": "EC2, Kinesis Data Stream, Dynamo DB, SNS, S3 and Lambda creation (v14)",
 
     "Parameters": {
 
-        "AnomalyDataDetectorCodeBuildProjectName": {
+        "ADDCodeBuildProjectName": {
             "Description": "CodeBuild Project name",
             "Type": "String",
-            "Default": "AnomalyDataDetector"
+            "Default": "addcodebuildproject"
         },
 
-        "AnomalyDataDetectorCodeCommitRepositoryName": {
+        "ADDCodeCommitRepositoryName": {
             "Description": "CodeCommit Repository name",
             "Type": "String",
-            "Default": "AnomalyDataDetector"
+            "Default": "addcoderepository"
         },
 
-        "AnomalyDataDetectorCodeDeployAppName": {
+        "ADDCodeDeployAppName": {
             "Description": "CodeDeploy Application name",
             "Type": "String",
-            "Default": "AnomalyDataDetector"
+            "Default": "addapp"
         },
 
-        "AnomalyDataDetectorCodeDeploymentGroupName": {
+        "ADDCodeDeploymentGroupName": {
             "Description": "CodeDeploy Deployment Group name",
             "Type": "String",
-            "Default": "AnomalyDataDetectorGroup"
+            "Default": "adddeploymentgroup"
         },
 
-        "AnomalyDataDetectorCodePipelineName": {
+        "ADDCodePipelineName": {
             "Description": "CodePipeline name",
             "Type": "String",
-            "Default": "AnomalyDataDetector"
+            "Default": "addpipeline"
         },
 
-        "AnomalyDataDetectorDynamoDBTableName": {
+        "ADDDynamoDBTableName": {
             "Description": "Dynamo Database Table name",
             "Type": "String",
-            "Default": "m03p02_anomaly_data"
+            "Default": "adddb"
         },
 
-        "AnomalyDataDetectorEC2Keyname": {
+        "ADDEC2KeypairName": {
             "Description": "Name of EC2 key",
             "Type": "String",
-            "Default": "anomalydetectorkey"
+            "Default": "addec2key"
         },
 
-        "AnomalyDataDetectorKinesisDataStreamName": {
+        "ADDKinesisDataStreamName": {
             "Description": "Kinesis DataStream name",
             "Type": "String",
-            "Default": "m03p02_raw_data_stream"
+            "Default": "addkinesisstream"
         },
 
-        "AnomalyDataDetectorSNSAlertTopicName": {
+        "ADDSNSAlertTopicName": {
             "Description": "SNS Alert Topic Name",
             "Type": "String",
-            "Default": "m03p02_anomaly_alerts"
+            "Default": "addalerttopic"
         },
 
-		"AnomalyDataDetectorSubscriptionEmailID":{
+		"ADDSubscriptionEmailID":{
             "Description": "Email ID of subscriber of the Alert topic",
             "Type": "String",
             "Default": "sudheendran@hotmail.com"
 		},
 
-		"AnomalyDataDetectorS3BucketName":{
+		"ADDS3BucketName":{
             "Description": "Name of S3 to be created for storing Anomaly Detection Source files",
             "Type": "String",
             "Default": "anomalydetections3bucket"
@@ -78,65 +78,95 @@
             "Default": "raw_data.zip"
 		},
 
-		"AnomalyDataDetectorLambdaS3KeyName":{
+		"ADDLambdaS3KeyName":{
             "Description": "Name of S3 Key (ZIP file name) to be used to locate the lambda handler source file",
             "Type": "String",
             "Default": "anomaly_detection.zip"
 		},
 
-		"AnomalyDataDetectorLambdaFunctionName":{
+		"ADDLambdaFunctionName":{
             "Description": "Name of Lambda function to create",
             "Type": "String",
-            "Default": "anomaly_detection"
+            "Default": "anomalydetection"
 		},
 
-		"AnomalyDataDetectorLambdaEnvName":{
+		"ADDLambdaEnvName":{
             "Description": "Runtime for the Lambda function to be created e.g Python3.11, Node.js etc)",
             "Type": "String",
             "Default": "python3.11"
 		},
 
-        "AnomalyDataDetectorEC2InstanceName": {
+        "ADDEC2InstanceName": {
             "Description": "Name of the EC2 machine to be created",
             "Type": "String",
-            "Default": "anomalywebserver"
+            "Default": "addserver"
         },
 		
-        "AnomalyDataDetectorEC2InstanceType": {
+        "ADDEC2InstanceType": {
             "Description": "EC2 instance type",
             "Type": "String",
             "Default": "t2.micro"
         },
 
-        "AnomalyDataDetectorEC2InstanceAMI": {
+        "ADDEC2InstanceAMI": {
             "Description": "EC2 Instance AMI",
             "Type": "String",
             "Default": "ami-0261755bbcb8c4a84"
         },
 
-		"AnomalyDataDetectorEC2InstanceTagName":{
+		"ADDEC2InstanceTagName":{
             "Description": "Tag to be created for EC2",
             "Type": "String",
             "Default": "Name"
 		},
 
-        "AnomalyDataDetectorIdentifierTagName": {
+        "ADDIdentifierTagName": {
             "Description": "Tag Name to be used while creating resources",
             "Type": "String",
             "Default": "Identifier"
         },
 
-        "AnomalyDataDetectorIdentifierTagValue": {
+        "ADDIdentifierTagValue": {
             "Description": "Tag value to be used while creating resources",
             "Type": "String",
-            "Default": "AnomalyDataDetector"
-        }
+            "Default": "anomalydatadetector"
+        },
+		
+		"ADDEC2AdminRoleName": {
+            "Description": "Name of ec2 IAM admin role",
+            "Type": "String",
+            "Default": "addec2adminrole"
+		},
+
+		"ADDLambdaAdminRoleName": {
+            "Description": "Name of ec2 lambda admin role",
+            "Type": "String",
+            "Default": "addlambdaadminrole"
+		},
+
+		"ADDCodeBuildAdminRoleName": {
+            "Description": "Name of codebuild IAM admin role",
+            "Type": "String",
+            "Default": "addcodebuildadminrole"
+		},
+
+		"ADDCodeDeployAdminRoleName": {
+            "Description": "Name of codedeploy IAM admin role",
+            "Type": "String",
+            "Default": "addcodedeployadminrole"
+		},
+
+		"ADDCodePipelineAdminRoleName": {
+            "Description": "Name of codepipeline IAM admin role",
+            "Type": "String",
+            "Default": "addcodepipelineadminrole"
+		}
 
     },
 
     "Resources": {
 
-        "AnomalyDataDetectorEC2AdminRole": {
+        "ADDEC2AdminRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
                 "AssumeRolePolicyDocument": {
@@ -156,35 +186,38 @@
                     ]
                 },
 				"ManagedPolicyArns" : ["arn:aws:iam::aws:policy/AdministratorAccess"],
-				"RoleName" : "AnomalyDataDetectorEC2AdminRole",
+				"RoleName": {
+					"Ref": "ADDEC2AdminRoleName"
+				},
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
 			}
 		},
 
-        "AnomalyDataDetectorEC2AdminRoleInstance": {
+        "ADDEC2AdminRoleInstance": {
             "Type": "AWS::IAM::InstanceProfile",
-			"DependsOn" : "AnomalyDataDetectorEC2AdminRole",
             "Properties": {
                 "Path": "/",
                 "Roles": [
                     {
-                        "Ref": "AnomalyDataDetectorEC2AdminRole"
+                        "Ref": "ADDEC2AdminRole"
                     }
                 ],
-				"InstanceProfileName" : "AnomalyDataDetectorEC2AdminRole"
+				"InstanceProfileName" : {
+					"Ref": "ADDEC2AdminRoleName"
+				}
             }
         },
 
-        "AnomalyDataDetectorLambdaAdminRole": {
+        "ADDLambdaAdminRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
                 "AssumeRolePolicyDocument": {
@@ -204,35 +237,38 @@
                     ]
                 },
 				"ManagedPolicyArns" : ["arn:aws:iam::aws:policy/AdministratorAccess"],
-				"RoleName" : "AnomalyDataDetectorLambdaAdminRole",
+				"RoleName": {
+					"Ref": "ADDLambdaAdminRoleName"
+				},
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
 			}
 		},
 
-        "AnomalyDataDetectorLambdaAdminRoleInstance": {
+        "ADDLambdaAdminRoleInstance": {
             "Type": "AWS::IAM::InstanceProfile",
-			"DependsOn" : "AnomalyDataDetectorLambdaAdminRole",
             "Properties": {
                 "Path": "/",
                 "Roles": [
                     {
-                        "Ref": "AnomalyDataDetectorLambdaAdminRole"
+                        "Ref": "ADDLambdaAdminRole"
                     }
                 ],
-				"InstanceProfileName" : "AnomalyDataDetectorLambdaAdminRole"
+				"InstanceProfileName" : {
+					"Ref": "ADDLambdaAdminRoleName"
+				}
             }
         },
 
-        "AnomalyDataDetectorCodeDeployAdminRole": {
+        "ADDCodeDeployAdminRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
                 "AssumeRolePolicyDocument": {
@@ -252,35 +288,38 @@
                     ]
                 },
 				"ManagedPolicyArns" : ["arn:aws:iam::aws:policy/AdministratorAccess"],
-				"RoleName" : "AnomalyDataDetectorCodeDeployAdminRole",
+				"RoleName": {
+					"Ref": "ADDCodeDeployAdminRoleName"
+				},
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
 			}
 		},
 
-        "AnomalyDataDetectorCodeDeployAdminRoleInstance": {
+        "ADDCodeDeployAdminRoleInstance": {
             "Type": "AWS::IAM::InstanceProfile",
-			"DependsOn" : "AnomalyDataDetectorCodeDeployAdminRole",
             "Properties": {
                 "Path": "/",
                 "Roles": [
                     {
-                        "Ref": "AnomalyDataDetectorCodeDeployAdminRole"
+                        "Ref": "ADDCodeDeployAdminRole"
                     }
                 ],
-				"InstanceProfileName" : "AnomalyDataDetectorCodeDeployAdminRole"
+				"InstanceProfileName" : {
+					"Ref": "ADDCodeDeployAdminRoleName"
+				}
             }
         },
 
-        "AnomalyDataDetectorCodeBuildAdminRole": {
+        "ADDCodeBuildAdminRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
                 "AssumeRolePolicyDocument": {
@@ -300,35 +339,38 @@
                     ]
                 },
 				"ManagedPolicyArns" : ["arn:aws:iam::aws:policy/AdministratorAccess"],
-				"RoleName" : "AnomalyDataDetectorCodeBuildAdminRole",
+				"RoleName": {
+					"Ref": "ADDCodeBuildAdminRoleName"
+				},
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
 			}
 		},
 
-        "AnomalyDataDetectorCodeBuildAdminRoleInstance": {
+        "ADDCodeBuildAdminRoleInstance": {
             "Type": "AWS::IAM::InstanceProfile",
-			"DependsOn" : "AnomalyDataDetectorCodeBuildAdminRole",
             "Properties": {
                 "Path": "/",
                 "Roles": [
                     {
-                        "Ref": "AnomalyDataDetectorCodeBuildAdminRole"
+                        "Ref": "ADDCodeBuildAdminRole"
                     }
                 ],
-				"InstanceProfileName" : "AnomalyDataDetectorCodeBuildAdminRole"
+				"InstanceProfileName" : {
+					"Ref": "ADDCodeBuildAdminRoleName"
+				}
             }
         },
 
-        "AnomalyDataDetectorCodePipelineAdminRole": {
+        "ADDCodePipelineAdminRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
                 "AssumeRolePolicyDocument": {
@@ -348,21 +390,23 @@
                     ]
                 },
 				"ManagedPolicyArns" : ["arn:aws:iam::aws:policy/AdministratorAccess"],
-				"RoleName" : "AnomalyDataDetectorCodePipelineAdminRole",
+				"RoleName": {
+					"Ref": "ADDCodePipelineAdminRoleName"
+				},
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
 			}
 		},
 
-		"AnomalyDataDetectorVPC": {
+		"ADDVPC": {
 			"Type": "AWS::EC2::VPC",
 			"Properties": {
 				"CidrBlock": "10.0.0.0/16",
@@ -371,21 +415,21 @@
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
 			}
 		},
 
-		"AnomalyDataDetectorSubnet": {
+		"ADDSubnet": {
 			"Type": "AWS::EC2::Subnet",
 			"Properties": {
 				"VpcId": {
-					"Ref": "AnomalyDataDetectorVPC"
+					"Ref": "ADDVPC"
 				},
 				"CidrBlock": "10.0.1.0/24",
 				"AvailabilityZone": "us-east-1a",
@@ -393,22 +437,22 @@
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
 			}
 		},
 		
-       "AnomalyDataDetectorSecurityGroup": {
+       "ADDSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
                 "GroupDescription": "Enable HTTP, HTTPS, SSH, All ingress",
                 "VpcId": {
-                    "Ref": "AnomalyDataDetectorVPC"
+                    "Ref": "ADDVPC"
                 },
                 "SecurityGroupIngress": [
                     {
@@ -439,26 +483,26 @@
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
             }
         },
 		
-		"AnomalyDataDetectorIG": {
+		"ADDIG": {
 			"Type": "AWS::EC2::InternetGateway",
 			"Properties": {
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
@@ -466,123 +510,124 @@
 			
 		},
 		
-		"AnomalyDataDetectorRouteTable" : {
+		"ADDRouteTable" : {
 			"Type" : "AWS::EC2::RouteTable",
 			"Properties" : {
 				"VpcId" : {
-					"Ref" : "AnomalyDataDetectorVPC"
+					"Ref" : "ADDVPC"
 				},
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
 			}
 		},
 
-		"AnomalyDataDetectorSubnetRouteTableAssociation" : {
+		"ADDSubnetRouteTableAssociation" : {
 		   "Type" : "AWS::EC2::SubnetRouteTableAssociation",
 		   "Properties" : {
 			   "SubnetId" : { 
-					"Ref" : "AnomalyDataDetectorSubnet" 
+					"Ref" : "ADDSubnet" 
 				},
 				"RouteTableId" : { 
-					"Ref" : "AnomalyDataDetectorRouteTable" 
+					"Ref" : "ADDRouteTable" 
 				}
 			}
 		},
 
-		"AnomalyDataDetectorRoute" : {
+		"ADDRoute" : {
 			"Type" : "AWS::EC2::Route",
 			"Properties" : {
 				"RouteTableId" : { 
-					"Ref" : "AnomalyDataDetectorRouteTable" 
+					"Ref" : "ADDRouteTable" 
 				},
 				"DestinationCidrBlock" : "0.0.0.0/0",
 				"GatewayId" : { 
-					"Ref" : "AnomalyDataDetectorIG"
+					"Ref" : "ADDIG"
 				}
 			}
 		},
 
-		"AnomalyDataDetectorVPCGatewayAttachment" : {
+		"ADDVPCGatewayAttachment" : {
 			"Type" : "AWS::EC2::VPCGatewayAttachment",
 			"Properties" : {
 				"InternetGatewayId" : {
-					"Ref" : "AnomalyDataDetectorIG"
+					"Ref" : "ADDIG"
 				},
 				"VpcId" : {
-					"Ref" : "AnomalyDataDetectorVPC"
+					"Ref" : "ADDVPC"
 				}
 			}
 		},
 
-		"AnomalyDataDetectorEC2KeyPair": {
+		"ADDEC2KeyPair": {
 			"Type" : "AWS::EC2::KeyPair",
 			"Properties" : {
 				"KeyName" : {
-					"Ref" : "AnomalyDataDetectorEC2Keyname"
+					"Ref" : "ADDEC2KeypairName"
 				},
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
 			}
 		},		
 
-        "AnomalyDataDetectorEC2Instance": {
+        "ADDEC2Instance": {
             "Type": "AWS::EC2::Instance",
             "Properties": {
 				"IamInstanceProfile" : {
-					"Ref" : "AnomalyDataDetectorEC2AdminRoleInstance"
+					"Ref" : "ADDEC2AdminRoleInstance"
 				},
 				"Tags": [
 					{
 						"Key" : {
-							"Ref" : "AnomalyDataDetectorEC2InstanceTagName"
+							"Ref" : "ADDEC2InstanceTagName"
 						},
 						"Value" : {
-							"Ref": "AnomalyDataDetectorEC2InstanceName"
+							"Ref": "ADDEC2InstanceName"
 						}
 					},
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
-				],                "InstanceType": {
-                    "Ref": "AnomalyDataDetectorEC2InstanceType"
+				],                
+				"InstanceType": {
+                    "Ref": "ADDEC2InstanceType"
                 },
                 "ImageId": {
-                    "Ref": "AnomalyDataDetectorEC2InstanceAMI"
+                    "Ref": "ADDEC2InstanceAMI"
                 },
 				"KeyName" : {
-					"Ref": "AnomalyDataDetectorEC2KeyPair"
+					"Ref": "ADDEC2KeyPair"
 				},
                 "NetworkInterfaces": [
                     {
                         "GroupSet": [
                             {
-                                "Ref": "AnomalyDataDetectorSecurityGroup"
+                                "Ref": "ADDSecurityGroup"
                             }
                         ],
 						"DeviceIndex": "0",
                         "SubnetId": {
-                            "Ref": "AnomalyDataDetectorSubnet"
+                            "Ref": "ADDSubnet"
                         }
                     }
                 ],
@@ -610,7 +655,7 @@
             }
         },
 
-        "AnomalyDataDetectorDB" : {
+        "ADDDBTable" : {
   			"Type" : "AWS::DynamoDB::Table",
   			"Properties" : {
       			"AttributeDefinitions" : [
@@ -634,7 +679,7 @@
                     }
                 ],
       			"TableName" : {
-					"Ref" : "AnomalyDataDetectorDynamoDBTableName"
+					"Ref" : "ADDDynamoDBTableName"
 				},
       			"ProvisionedThroughput": {
                     "ReadCapacityUnits": 2,
@@ -643,125 +688,133 @@
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
     		}
 		},
 
-		"AnomalyDataDetectorKinesisDatastream": {
+		"ADDKinesisDatastream": {
 			"Type" : "AWS::Kinesis::Stream",
 			"Properties" : {
 				"Name" : {
-					"Ref" : "AnomalyDataDetectorKinesisDataStreamName"
+					"Ref" : "ADDKinesisDataStreamName"
 				},
 				"ShardCount" : 1,
 				"Tags": [
 					{
-						"Key": "IdentifierTag",
-						"Value": "AnomalyDataDetector"
-					}
-				]
-			}
-		},
-
-		"AnomalyDataDetectorSNSAlertTopic": {
-			"Type" : "AWS::SNS::Topic",
-			"Properties" : {
-				"TopicName" : {
-					"Ref" : "AnomalyDataDetectorSNSAlertTopicName"
-				},
-				"Tags": [
-					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
 			}
 		},
 
-		"AnomalyDataDetectorSNSEmailSubscription": {
-			"Type" : "AWS::SNS::Subscription",
+		"ADDSNSAlertTopic": {
+			"Type" : "AWS::SNS::Topic",
 			"Properties" : {
-				"Endpoint" : {
-					"Ref": "AnomalyDataDetectorSubscriptionEmailID"
-				},
-				"Protocol" : "email",
-				"TopicArn" : {
-					"Ref": "AnomalyDataDetectorSNSAlertTopic"
-				}
-			}
-		},
-
-		"AnomalyDataDetectorS3Bucket" : {
-			"Type" : "AWS::S3::Bucket",
-			"Properties": {
-				"BucketName": {
-					"Ref" : "AnomalyDataDetectorS3BucketName"
+				"TopicName" : {
+					"Ref" : "ADDSNSAlertTopicName"
 				},
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
+						}
+					}
+				]
+			}
+		},
+
+		"ADDSNSEmailSubscription": {
+			"Type" : "AWS::SNS::Subscription",
+			"Properties" : {
+				"Endpoint" : {
+					"Ref": "ADDSubscriptionEmailID"
+				},
+				"Protocol" : "email",
+				"TopicArn" : {
+					"Ref": "ADDSNSAlertTopic"
+				}
+			}
+		},
+
+		"ADDS3Bucket" : {
+			"Type" : "AWS::S3::Bucket",
+			"Properties": {
+				"BucketName": {
+					"Ref" : "ADDS3BucketName"
+				},
+				"Tags": [
+					{
+						"Key": {
+							"Ref": "ADDIdentifierTagName"
+						},
+						"Value": {
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
             }		
 		},
 
-		"AnomalyDataDetectorCodeCommitRepository": {
+		"ADDCodeCommitRepository": {
 			"Type" : "AWS::CodeCommit::Repository",
-			"DependsOn" : "AnomalyDataDetectorS3Bucket",
+			"DependsOn" : "ADDS3Bucket",
 			"Properties" : {
 				"RepositoryName" : {
-					"Ref": "AnomalyDataDetectorCodeCommitRepositoryName"
+					"Ref": "ADDCodeCommitRepositoryName"
 				},
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
 			}
 		},
 
-		"AnomalyDataDetectorCodeBuildProject": {
+		"ADDCodeBuildProject": {
 			"Type" : "AWS::CodeBuild::Project",
-			"DependsOn" : "AnomalyDataDetectorCodeCommitRepository",
+			"DependsOn" : "ADDCodeCommitRepository",
 			"Properties" : {
 				"Name" : {
-					"Ref": "AnomalyDataDetectorCodeBuildProjectName"
+					"Ref": "ADDCodeBuildProjectName"
 				},
 				"Source" : {
 					"Type" : "CODECOMMIT",
-					"Location" : "https://git-codecommit.us-east-1.amazonaws.com/v1/repos/AnomalyDataDetector"
+					"Location" : {
+						"Fn::GetAtt": [
+							"ADDCodeCommitRepository", "CloneUrlHttp"
+						]
+					}
 				},
 				"Artifacts" : {
 					"Type" : "S3",
 					"Location" : {
-						"Ref" : "AnomalyDataDetectorS3BucketName"
+						"Ref" : "ADDS3BucketName"
 					},
 					"Name": "/",
 					"Path": ""
 				},
 				"ServiceRole": {
 					"Fn::GetAtt": [
-						"AnomalyDataDetectorCodeBuildAdminRole", "Arn"
+						"ADDCodeBuildAdminRole", "Arn"
 					]
 				},
 				"Environment": {
@@ -773,44 +826,44 @@
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
 			}
 		},
 
-		"AnomalyDataDetectorCodeDeployApp": {
+		"ADDCodeDeployApp": {
 			"Type" : "AWS::CodeDeploy::Application",
 			"Properties" : {
 				"ApplicationName" : {
-					"Ref": "AnomalyDataDetectorCodeDeployAppName"
+					"Ref": "ADDCodeDeployAppName"
 				},
 				"ComputePlatform" : "Server",
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
 			}
 		},
 		
-		"AnomalyDataDetectorCodeDeploymentGroup" : {
+		"ADDCodeDeploymentGroup" : {
 			"Type" : "AWS::CodeDeploy::DeploymentGroup",
 			"Properties" : { 
 				"ApplicationName" : {
-					"Ref" : "AnomalyDataDetectorCodeDeployApp"
+					"Ref" : "ADDCodeDeployApp"
 				},
 				"DeploymentGroupName" : {
-					"Ref" : "AnomalyDataDetectorCodeDeploymentGroupName"
+					"Ref" : "ADDCodeDeploymentGroupName"
 				}, 
 				"DeploymentConfigName" : "CodeDeployDefault.AllAtOnce", 
 				"DeploymentStyle" : {
@@ -823,7 +876,7 @@
 						"RevisionType" : "S3",
 						"S3Location": {
 							"Bucket": {
-								"Ref" : "AnomalyDataDetectorS3BucketName"
+								"Ref" : "ADDS3BucketName"
 							},
 							"Key": {
 								"Ref" : "AnomalyDataGeneratorS3KeyName"
@@ -837,43 +890,43 @@
 						"Key" : "Name",
 						"Type" : "KEY_AND_VALUE",
 						"Value" : {
-							"Ref" : "AnomalyDataDetectorEC2InstanceName"
+							"Ref" : "ADDEC2InstanceName"
 						}
 					}
 				],
 				"ServiceRoleArn": {
 					"Fn::GetAtt": [
-						"AnomalyDataDetectorCodeDeployAdminRole", "Arn"
+						"ADDCodeDeployAdminRole", "Arn"
 					]
 				},
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
 			}
 		},
 
-		"AnomalyDataDetectorCodePipeline": {
+		"ADDCodePipeline": {
 			"Type": "AWS::CodePipeline::Pipeline",
 			"Properties":{
 				"ArtifactStore": {
 					"Location" : {
-						"Ref" : "AnomalyDataDetectorS3BucketName"
+						"Ref" : "ADDS3BucketName"
 					},
 					"Type" : "S3"
 				},
 				"Name" : {
-					"Ref" : "AnomalyDataDetectorCodePipelineName"
+					"Ref" : "ADDCodePipelineName"
 				},
 				"RoleArn" : {
 					"Fn::GetAtt": [
-						"AnomalyDataDetectorCodePipelineAdminRole", "Arn"
+						"ADDCodePipelineAdminRole", "Arn"
 					]
 				},
 
@@ -896,7 +949,7 @@
 							"Configuration": {
 								"BranchName": "main",
 								"RepositoryName": {
-									"Ref": "AnomalyDataDetectorCodeCommitRepositoryName"
+									"Ref": "ADDCodeCommitRepositoryName"
 								}
 							},
 							"RunOrder": 1
@@ -914,7 +967,7 @@
 							},
 							"Configuration" : {
 								"ProjectName" : {
-									"Ref" : "AnomalyDataDetectorCodeBuildProjectName"
+									"Ref" : "ADDCodeBuildProjectName"
 								}
 							},
 							"InputArtifacts" : [{
@@ -944,10 +997,10 @@
 
 							"Configuration" : {
 								"ApplicationName" : {
-									"Ref":"AnomalyDataDetectorCodeDeployAppName"
+									"Ref":"ADDCodeDeployAppName"
 								},
 								"DeploymentGroupName" : {
-									"Ref" : "AnomalyDataDetectorCodeDeploymentGroupName"
+									"Ref" : "ADDCodeDeploymentGroupName"
 								}
 							},
 							
@@ -963,82 +1016,74 @@
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
 			}
 		},
 		
-		"AnomalyDataDetectorLambdaFunction": {
+		"ADDLambdaFunction": {
 			"Type": "AWS::Lambda::Function",
-			"DependsOn" : [
-				"AnomalyDataDetectorLambdaAdminRole",
-				"AnomalyDataDetectorLambdaAdminRoleInstance"
-			],
 			"Properties": {
 				"FunctionName": {
-					"Ref" : "AnomalyDataDetectorLambdaFunctionName"
+					"Ref" : "ADDLambdaFunctionName"
 				},
 				"Description": "Anomaly Detector",
 				"Handler": "anomaly_detection.lambda_handler",
 				"Role": { 
 					"Fn::GetAtt" : [
-						"AnomalyDataDetectorLambdaAdminRole", "Arn" 
+						"ADDLambdaAdminRole", "Arn" 
 						]
 				},
 				"Code": {
 					"S3Bucket": {
-						"Ref": "AnomalyDataDetectorS3BucketName"
+						"Ref": "ADDS3BucketName"
 					},
 					"S3Key": {
-						"Ref" : "AnomalyDataDetectorLambdaS3KeyName"
+						"Ref" : "ADDLambdaS3KeyName"
 					}
 				},
 				"Environment":{
 					"Variables":{
 						"dynamoDBTableName":{
-							"Ref":"AnomalyDataDetectorDB"
+							"Ref":"ADDDBTable"
 						},
 						"topicArn":{
-							"Ref":"AnomalyDataDetectorSNSAlertTopic"
+							"Ref":"ADDSNSAlertTopic"
 						}
 					}
 				},
 				"Runtime": {
-					"Ref" : "AnomalyDataDetectorLambdaEnvName"
+					"Ref" : "ADDLambdaEnvName"
 				},
 				"Tags": [
 					{
 						"Key": {
-							"Ref": "AnomalyDataDetectorIdentifierTagName"
+							"Ref": "ADDIdentifierTagName"
 						},
 						"Value": {
-							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+							"Ref": "ADDIdentifierTagValue"
 						}
 					}
 				]
 			}
 		},
 		
-		"AnomalyDataDetectorLambdaEventSource": {
+		"ADDLambdaEventSource": {
 			"Type": "AWS::Lambda::EventSourceMapping",
-			"DependsOn" : [
-				"AnomalyDataDetectorLambdaAdminRole",
-				"AnomalyDataDetectorLambdaAdminRoleInstance",
-				"AnomalyDataDetectorLambdaFunction"
-			],
+			"DependsOn" : "ADDLambdaFunction",
 			"Properties": {
 				"FunctionName": {
-					"Ref": "AnomalyDataDetectorLambdaFunction"
+					"Ref": "ADDLambdaFunction"
 				},
 				"Enabled": true,
 				"EventSourceArn": {
 					"Fn::GetAtt": [
-						"AnomalyDataDetectorKinesisDatastream",
+						"ADDKinesisDatastream",
 						"Arn"
 					]
 				},
@@ -1052,14 +1097,14 @@
 		"InstanceID" : {
 			"Description" : "InstanceID of the EC2 Instance created",
 			"Value" : { 
-				"Ref" : "AnomalyDataDetectorEC2Instance" 
+				"Ref" : "ADDEC2Instance" 
 			}
 		},
 		"TopicARN" : {
 			"Description" : "ARN of the m03p02_anomaly_alerts topic created",
 			"Value" : { 
-				"Ref" : "AnomalyDataDetectorSNSAlertTopic" 
+				"Ref" : "ADDSNSAlertTopic" 
 				}
 		}
-	}	
+	}
 }

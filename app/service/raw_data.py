@@ -7,7 +7,7 @@ import datetime
 import sched
 
 
-KINESIS_DATA_STREAM = "m03p02_raw_data_stream"
+KINESIS_DATA_STREAM = "addkinesisstream"
 
 kinesis_handle = boto3.client('kinesis', region_name = "us-east-1")
 

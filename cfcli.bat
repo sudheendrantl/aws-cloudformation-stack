@@ -24,18 +24,19 @@ rem set the name of the s3 bucket to be used for storing project templates
 set templatesbucketname=cftaddbucket
 
 rem set the name of the db table created by the template
-set dynamodbtablename=m03p02_anomaly_data
+set dynamodbtablename=adddb
 
 rem set the name of the local GIT folder. This needs to the same name as 
 rem provided in the template while creating the codecommit repository.
-set localgitrepofoldername=AnomalyDataDetector
+set localgitrepofoldername=addcoderepository
+set codebuildprojectname=addcodebuildproject
 
 rem set the name of the cloudformation stack name
 set stackname=cfproject
 
 rem set the name of the keypair name for ec2. This needs to the same name as 
 rem provided in the template while creating the keypair.
-set keypairname=anomalydetectorkey
+set keypairname=addec2key
 
 if not "%preclean%"=="1" goto preprocess
 
@@ -186,7 +187,7 @@ cd ..
 
 echo:
 echo initiating a code build...
-aws codebuild start-build --project-name %localgitrepofoldername% > result.txt
+aws codebuild start-build --project-name %codebuildprojectname% > result.txt
 findstr /i "id" result.txt > resid.txt
 
 FOR /F "tokens=1-3 delims==:" %%I IN (resid.txt) DO (
@@ -220,7 +221,7 @@ echo:
 echo -----------------------------------------------------
 
 echo:
-echo press any key to continue with creation of task2 items
+echo continue with creation of task2 items?
 pause
 
 :task2
