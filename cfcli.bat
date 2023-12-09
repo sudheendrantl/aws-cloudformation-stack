@@ -8,16 +8,12 @@ set preclean=1
 set preprocess=1
 set task1=1
 set task2=1
-set task3=1
-set task4=1
 set postclean=1
 
 rem set the name of the template files for the 3 different tasks
 rem that is required as per the c06 project requirement
 set task1filename=task1.json
 set task2filename=task2.json
-set task3filename=task3.json
-set task4filename=task4.json
 
 rem set the name of the s3 bucket to be used for storing project artifacts
 rem This needs to the same name as provided in the template while creating 
@@ -26,6 +22,9 @@ set anomalydetectionbucketname=anomalydetections3bucket
 
 rem set the name of the s3 bucket to be used for storing project templates
 set templatesbucketname=cftaddbucket
+
+rem set the name of the db table created by the template
+set dynamodbtablename=m03p02_anomaly_data
 
 rem set the name of the local GIT folder. This needs to the same name as 
 rem provided in the template while creating the codecommit repository.
@@ -65,11 +64,10 @@ if %errlevel% equ 0 aws s3 rb s3://%templatesbucketname%
 echo:
 echo checking/deleting local git repository and tmp files it they exist...
 if exist %localgitrepofoldername% rd /S /Q %localgitrepofoldername%
+if exist dbcount.txt del dbcount.txt
 if exist result.txt del result.txt
 if exist resid.txt del resid.txt
-if exist keypairid.txt del keypairid.txt
 if exist %keypairname%.pem del %keypairname%.pem
-if exist ip.txt del ip.txt
 if exist stack.txt del stack.txt
 if exist status.txt del status.txt
 
@@ -97,8 +95,6 @@ echo:
 echo copying templates to the templates bucket named %templatesbucketname% ...
 aws s3 cp %task1filename% s3://%templatesbucketname%
 aws s3 cp %task2filename% s3://%templatesbucketname%
-aws s3 cp %task3filename% s3://%templatesbucketname%
-aws s3 cp %task4filename% s3://%templatesbucketname%
 
 echo:
 echo preprocess completed.
@@ -127,7 +123,7 @@ aws cloudformation wait stack-create-complete
 echo:
 echo cloudformation stack for task1 created
 
-rem get the keypair id from ec2 and save to keypairid.txt file and keypairid variable
+rem get the keypair id from ec2 and save to result.txt file and keypairid variable
 aws ec2 describe-key-pairs --filters Name=key-name,Values=%keypairname% --query KeyPairs[*].KeyPairId --output text > result.txt
 
 set /p keypairid=<result.txt
@@ -161,7 +157,7 @@ echo:
 echo ec2 is up and running!
 
 rem get the public ip address of the ec2 instance created and save
-rem it into ip.txt and ip variable
+rem it into result.txt and ip variable
 aws ec2 describe-instances --filters "Name=instance-id,Values=%instanceid%" --query "Reservations[].Instances[].PublicIpAddress" --output text > result.txt
 
 set /p ip=<result.txt
@@ -169,65 +165,6 @@ set ip=%ip:.=-%
 
 rem launch a new command windows and SSH into the new ec2 created
 start cmd /k "ssh -i "%keypairname%.pem" ubuntu@ec2-%ip%.compute-1.amazonaws.com"
-
-echo:
-echo task1 completed.
-
-echo:
-echo ------------------------------------------------------
-
-echo:
-echo continue with creation of task2 items?
-pause 
-
-:task2
-
-if not "%task2%"=="1" goto task3
-
-echo:
-echo -----------------------------------------------------
-
-echo:
-echo task2 started...
-
-echo:
-echo updating created stack with task2 items ...
-aws cloudformation update-stack --capabilities CAPABILITY_NAMED_IAM  --stack-name %stackname% --template-url https://%templatesbucketname%.s3.amazonaws.com/%task2filename%
-
-echo:
-echo waiting for completion of task2 stack update...
-aws cloudformation wait stack-update-complete
-
-echo:
-echo task2 completed.
-
-echo:
-echo ------------------------------------------------------
-
-echo:
-echo continue with creation of task3 items?
-pause 
-
-:task3
-
-if not "%task3%"=="1" goto task4
-
-echo:
-echo -----------------------------------------------------
-
-echo:
-echo task3 started...
-
-echo:
-echo updating created stack with task3 items ...
-aws cloudformation update-stack --capabilities CAPABILITY_NAMED_IAM  --stack-name %stackname% --template-url https://%templatesbucketname%.s3.amazonaws.com/%task3filename%
-
-echo:
-echo waiting for completion of task3 stack update...
-aws cloudformation wait stack-update-complete
-
-echo:
-echo stack updated with items in task3.
 
 echo:
 echo cloning the git repository locally
@@ -277,38 +214,38 @@ echo:
 echo build completed!
 
 echo:
-echo task3 completed.
+echo task1 completed.
 
 echo:
 echo -----------------------------------------------------
 
 echo:
-echo continue with creation of task4 items?
-pause 
+echo press any key to continue with creation of task2 items
+pause
 
-:task4
+:task2
 
-if not "%task4%"=="1" goto postclean
+if not "%task2%"=="1" goto postclean
 
 echo:
 echo -----------------------------------------------------
 
 echo:
-echo task4 started...
+echo task2 started...
 
 echo:
-echo updating created stack with task4 items ...
-aws cloudformation update-stack --capabilities CAPABILITY_NAMED_IAM  --stack-name %stackname% --template-url https://%templatesbucketname%.s3.amazonaws.com/%task4filename%
+echo updating created stack with task2 items ...
+aws cloudformation update-stack --capabilities CAPABILITY_NAMED_IAM  --stack-name %stackname% --template-url https://%templatesbucketname%.s3.amazonaws.com/%task2filename%
 
 echo:
-echo waiting for completion of task4 stack update...
+echo waiting for completion of task2 stack update...
 aws cloudformation wait stack-update-complete
 
 echo:
-echo stack updated with items in task4.
+echo stack updated with items in task2.
 
 echo:
-echo task4 completed.
+echo task2 completed.
 
 echo:
 echo all deployments done and the stack is ready for use!
@@ -316,13 +253,22 @@ echo all deployments done and the stack is ready for use!
 echo:
 echo -----------------------------------------------------
 
-echo:
-echo WARNING: continue deleting all the infra created?
-pause 
+:waitfordeleteconfirmation
 
 echo:
-echo if you are sure...
-pause 
+aws dynamodb scan --table-name %dynamodbtablename% --select COUNT > dbcount.txt
+python getdbcount.py
+set /p count=<result.txt
+echo count of items in %dynamodbtablename% is %count%
+
+echo:
+echo WARNING: continue deleting all the infra created(y/n)?
+
+set var=n
+set /p var=
+
+if "%var%"=="y" goto postclean
+goto waitfordeleteconfirmation
 
 :postclean
 
@@ -352,6 +298,7 @@ echo:
 echo checking/deleting local git repository and tmp files if they exist...
 
 if exist %localgitrepofoldername% rd /S /Q %localgitrepofoldername%
+if exist dbcount.txt del dbcount.txt
 if exist result.txt del result.txt
 if exist resid.txt del resid.txt
 if exist %keypairname%.pem del %keypairname%.pem
@@ -374,4 +321,3 @@ echo -----------------------------------------------------
 
 :exit
 pause
-

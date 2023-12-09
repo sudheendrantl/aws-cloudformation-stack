@@ -172,6 +172,7 @@
 
         "AnomalyDataDetectorEC2AdminRoleInstance": {
             "Type": "AWS::IAM::InstanceProfile",
+			"DependsOn" : "AnomalyDataDetectorEC2AdminRole",
             "Properties": {
                 "Path": "/",
                 "Roles": [
@@ -219,6 +220,7 @@
 
         "AnomalyDataDetectorLambdaAdminRoleInstance": {
             "Type": "AWS::IAM::InstanceProfile",
+			"DependsOn" : "AnomalyDataDetectorLambdaAdminRole",
             "Properties": {
                 "Path": "/",
                 "Roles": [
@@ -266,6 +268,7 @@
 
         "AnomalyDataDetectorCodeDeployAdminRoleInstance": {
             "Type": "AWS::IAM::InstanceProfile",
+			"DependsOn" : "AnomalyDataDetectorCodeDeployAdminRole",
             "Properties": {
                 "Path": "/",
                 "Roles": [
@@ -313,6 +316,7 @@
 
         "AnomalyDataDetectorCodeBuildAdminRoleInstance": {
             "Type": "AWS::IAM::InstanceProfile",
+			"DependsOn" : "AnomalyDataDetectorCodeBuildAdminRole",
             "Properties": {
                 "Path": "/",
                 "Roles": [
@@ -541,7 +545,7 @@
             "Type": "AWS::EC2::Instance",
             "Properties": {
 				"IamInstanceProfile" : {
-					"Ref" : "AnomalyDataDetectorEC2AdminRole"
+					"Ref" : "AnomalyDataDetectorEC2AdminRoleInstance"
 				},
 				"Tags": [
 					{
@@ -714,6 +718,332 @@
 					}
 				]
             }		
+		},
+
+		"AnomalyDataDetectorCodeCommitRepository": {
+			"Type" : "AWS::CodeCommit::Repository",
+			"DependsOn" : "AnomalyDataDetectorS3Bucket",
+			"Properties" : {
+				"RepositoryName" : {
+					"Ref": "AnomalyDataDetectorCodeCommitRepositoryName"
+				},
+				"Tags": [
+					{
+						"Key": {
+							"Ref": "AnomalyDataDetectorIdentifierTagName"
+						},
+						"Value": {
+							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+						}
+					}
+				]
+			}
+		},
+
+		"AnomalyDataDetectorCodeBuildProject": {
+			"Type" : "AWS::CodeBuild::Project",
+			"DependsOn" : "AnomalyDataDetectorCodeCommitRepository",
+			"Properties" : {
+				"Name" : {
+					"Ref": "AnomalyDataDetectorCodeBuildProjectName"
+				},
+				"Source" : {
+					"Type" : "CODECOMMIT",
+					"Location" : "https://git-codecommit.us-east-1.amazonaws.com/v1/repos/AnomalyDataDetector"
+				},
+				"Artifacts" : {
+					"Type" : "S3",
+					"Location" : {
+						"Ref" : "AnomalyDataDetectorS3BucketName"
+					},
+					"Name": "/",
+					"Path": ""
+				},
+				"ServiceRole": {
+					"Fn::GetAtt": [
+						"AnomalyDataDetectorCodeBuildAdminRole", "Arn"
+					]
+				},
+				"Environment": {
+					"ComputeType": "BUILD_GENERAL1_SMALL",
+					"Image": "aws/codebuild/amazonlinux2-aarch64-standard:2.0",
+					"ImagePullCredentialsType": "CODEBUILD",
+					"Type": "ARM_CONTAINER"
+				},
+				"Tags": [
+					{
+						"Key": {
+							"Ref": "AnomalyDataDetectorIdentifierTagName"
+						},
+						"Value": {
+							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+						}
+					}
+				]
+			}
+		},
+
+		"AnomalyDataDetectorCodeDeployApp": {
+			"Type" : "AWS::CodeDeploy::Application",
+			"Properties" : {
+				"ApplicationName" : {
+					"Ref": "AnomalyDataDetectorCodeDeployAppName"
+				},
+				"ComputePlatform" : "Server",
+				"Tags": [
+					{
+						"Key": {
+							"Ref": "AnomalyDataDetectorIdentifierTagName"
+						},
+						"Value": {
+							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+						}
+					}
+				]
+			}
+		},
+		
+		"AnomalyDataDetectorCodeDeploymentGroup" : {
+			"Type" : "AWS::CodeDeploy::DeploymentGroup",
+			"Properties" : { 
+				"ApplicationName" : {
+					"Ref" : "AnomalyDataDetectorCodeDeployApp"
+				},
+				"DeploymentGroupName" : {
+					"Ref" : "AnomalyDataDetectorCodeDeploymentGroupName"
+				}, 
+				"DeploymentConfigName" : "CodeDeployDefault.AllAtOnce", 
+				"DeploymentStyle" : {
+					  "DeploymentOption" : "WITHOUT_TRAFFIC_CONTROL",
+					  "DeploymentType" : "IN_PLACE"
+				},
+				"Deployment" : {
+					"IgnoreApplicationStopFailures" : "true",
+					"Revision" : {
+						"RevisionType" : "S3",
+						"S3Location": {
+							"Bucket": {
+								"Ref" : "AnomalyDataDetectorS3BucketName"
+							},
+							"Key": {
+								"Ref" : "AnomalyDataGeneratorS3KeyName"
+							},
+							"BundleType": "zip"
+						}
+					}
+				},
+				"Ec2TagFilters": [ 
+					{
+						"Key" : "Name",
+						"Type" : "KEY_AND_VALUE",
+						"Value" : {
+							"Ref" : "AnomalyDataDetectorEC2InstanceName"
+						}
+					}
+				],
+				"ServiceRoleArn": {
+					"Fn::GetAtt": [
+						"AnomalyDataDetectorCodeDeployAdminRole", "Arn"
+					]
+				},
+				"Tags": [
+					{
+						"Key": {
+							"Ref": "AnomalyDataDetectorIdentifierTagName"
+						},
+						"Value": {
+							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+						}
+					}
+				]
+			}
+		},
+
+		"AnomalyDataDetectorCodePipeline": {
+			"Type": "AWS::CodePipeline::Pipeline",
+			"Properties":{
+				"ArtifactStore": {
+					"Location" : {
+						"Ref" : "AnomalyDataDetectorS3BucketName"
+					},
+					"Type" : "S3"
+				},
+				"Name" : {
+					"Ref" : "AnomalyDataDetectorCodePipelineName"
+				},
+				"RoleArn" : {
+					"Fn::GetAtt": [
+						"AnomalyDataDetectorCodePipelineAdminRole", "Arn"
+					]
+				},
+
+				"Stages": [
+					{
+						"Name": "Source",
+						"Actions": [{
+							"Name": "SourceAction",
+							"ActionTypeId": {
+								"Category": "Source", 
+								"Owner": "AWS",
+								"Version": "1",
+								"Provider": "CodeCommit" 
+							},
+							"OutputArtifacts": [ 
+								{
+									"Name": "SourceArtifact"
+								}
+							],
+							"Configuration": {
+								"BranchName": "main",
+								"RepositoryName": {
+									"Ref": "AnomalyDataDetectorCodeCommitRepositoryName"
+								}
+							},
+							"RunOrder": 1
+						}]
+					},
+					{
+						"Name": "Build",
+						"Actions": [{
+							"Name": "Build",
+							"ActionTypeId": {
+								"Category": "Build", 
+								"Owner": "AWS",
+								"Version": "1",
+								"Provider": "CodeBuild" 
+							},
+							"Configuration" : {
+								"ProjectName" : {
+									"Ref" : "AnomalyDataDetectorCodeBuildProjectName"
+								}
+							},
+							"InputArtifacts" : [{
+								"Name" : "SourceArtifact"
+								
+							}],
+							
+							"OutputArtifacts": [ 
+								{
+									"Name": "BuildArtifact"
+								}
+							],
+							
+							"RunOrder": 1
+						}]
+					},
+					{
+						"Name": "Deploy",
+						"Actions": [{
+							"Name": "Deploy",
+							"ActionTypeId": {
+								"Category": "Deploy", 
+								"Owner": "AWS",
+								"Version": "1",
+								"Provider": "CodeDeploy" 
+							},
+
+							"Configuration" : {
+								"ApplicationName" : {
+									"Ref":"AnomalyDataDetectorCodeDeployAppName"
+								},
+								"DeploymentGroupName" : {
+									"Ref" : "AnomalyDataDetectorCodeDeploymentGroupName"
+								}
+							},
+							
+							"InputArtifacts" : [{
+								"Name" : "BuildArtifact"
+								
+							}],
+							
+							"RunOrder": 1
+						}]
+					}
+				],
+				"Tags": [
+					{
+						"Key": {
+							"Ref": "AnomalyDataDetectorIdentifierTagName"
+						},
+						"Value": {
+							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+						}
+					}
+				]
+			}
+		},
+		
+		"AnomalyDataDetectorLambdaFunction": {
+			"Type": "AWS::Lambda::Function",
+			"DependsOn" : [
+				"AnomalyDataDetectorLambdaAdminRole",
+				"AnomalyDataDetectorLambdaAdminRoleInstance"
+			],
+			"Properties": {
+				"FunctionName": {
+					"Ref" : "AnomalyDataDetectorLambdaFunctionName"
+				},
+				"Description": "Anomaly Detector",
+				"Handler": "anomaly_detection.lambda_handler",
+				"Role": { 
+					"Fn::GetAtt" : [
+						"AnomalyDataDetectorLambdaAdminRole", "Arn" 
+						]
+				},
+				"Code": {
+					"S3Bucket": {
+						"Ref": "AnomalyDataDetectorS3BucketName"
+					},
+					"S3Key": {
+						"Ref" : "AnomalyDataDetectorLambdaS3KeyName"
+					}
+				},
+				"Environment":{
+					"Variables":{
+						"dynamoDBTableName":{
+							"Ref":"AnomalyDataDetectorDB"
+						},
+						"topicArn":{
+							"Ref":"AnomalyDataDetectorSNSAlertTopic"
+						}
+					}
+				},
+				"Runtime": {
+					"Ref" : "AnomalyDataDetectorLambdaEnvName"
+				},
+				"Tags": [
+					{
+						"Key": {
+							"Ref": "AnomalyDataDetectorIdentifierTagName"
+						},
+						"Value": {
+							"Ref": "AnomalyDataDetectorIdentifierTagValue"
+						}
+					}
+				]
+			}
+		},
+		
+		"AnomalyDataDetectorLambdaEventSource": {
+			"Type": "AWS::Lambda::EventSourceMapping",
+			"DependsOn" : [
+				"AnomalyDataDetectorLambdaAdminRole",
+				"AnomalyDataDetectorLambdaAdminRoleInstance",
+				"AnomalyDataDetectorLambdaFunction"
+			],
+			"Properties": {
+				"FunctionName": {
+					"Ref": "AnomalyDataDetectorLambdaFunction"
+				},
+				"Enabled": true,
+				"EventSourceArn": {
+					"Fn::GetAtt": [
+						"AnomalyDataDetectorKinesisDatastream",
+						"Arn"
+					]
+				},
+				"StartingPosition": "LATEST"
+			}
 		}
 	},
 
