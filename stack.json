@@ -2,7 +2,7 @@
 
     "AWSTemplateFormatVersion": "2010-09-09",
 
-    "Description": "Creates resources like EC2 (with userdata to update environment, install CodeDeploy agent), VPC, VPCGatewayAttachment, IG, Route, RouteTable, RouteTableAsscocation, Subnet, Security Group, Kinesis Data Stream, Dynamo, SNS topic, SNS Subscription, S3, application Lambda (taking source from S3), Lambda EventSourceMapping, WaitHandle, WaitCondition and the corresponding lambda functions (with inline source in this template) with Lambda Permission that wait until code is checked into the repository before creating CodeBuild and waits for build completion before stack creation is completed, CodeCommit, CodeBuild, CodeDeploy for application, CodeDeploymentGroup along with Deployment, Codepipeline, Admin Roles for various services used, their Role instances, EC2 Keypair etc for the application Anomaly Data Dectector(ADD)",
+    "Description": "Creates resources like EC2 (with userdata to update environment, install CodeDeploy agent), VPC, VPCGatewayAttachment, IG, Route, RouteTable, RouteTableAsscocation, Subnet, Security Group, Kinesis Data Stream, Dynamo, SNS topic, SNS Subscription, S3, application Lambda (taking source from S3), Lambda EventSourceMapping, WaitHandle, WaitCondition and the correponding lambda functions (with inline source in this template) with Lambda Persmission that wait until code is checked into the repository before creating CodeBuild and waits for build completion before stack creation is completed, CodeCommit, CodeBuild, CodeDeploy for application, CodeDeploymentGroup along with Deployment, Codepipeline, Admin Roles for various services used, their Role instances, EC2 Keypair etc for the application Anomaly Data Dectector(ADD)",
 
     "Parameters": {
 
@@ -60,48 +60,48 @@
             "Default": "addalerttopic"
         },
 
-		"ADDSubscriptionEmailID":{
+        "ADDSubscriptionEmailID":{
             "Description": "Email ID of subscriber of the Alert topic",
             "Type": "String",
             "Default": "sudheendran@hotmail.com"
-		},
+        },
 
-		"ADDS3BucketName":{
+        "ADDS3BucketName":{
             "Description": "Name of S3 to be created for storing Anomaly Detection Source files",
             "Type": "String",
             "Default": "anomalydetections3bucket"
-		},
+        },
 
-		"AnomalyDataGeneratorS3KeyName":{
+        "AnomalyDataGeneratorS3KeyName":{
             "Description": "Name of S3 Key (ZIP file name) to be used to locate the raw data generator source file",
             "Type": "String",
             "Default": "raw_data.zip"
-		},
+        },
 
-		"ADDLambdaS3KeyName":{
+        "ADDLambdaS3KeyName":{
             "Description": "Name of S3 Key (ZIP file name) to be used to locate the lambda handler source file",
             "Type": "String",
             "Default": "anomaly_detection.zip"
-		},
+        },
 
-		"ADDLambdaFunctionName":{
+        "ADDLambdaFunctionName":{
             "Description": "Name of Lambda function to create",
             "Type": "String",
             "Default": "anomalydetection"
-		},
+        },
 
-		"ADDLambdaEnvName":{
+        "ADDLambdaEnvName":{
             "Description": "Runtime for the Lambda function to be created e.g Python3.11, Node.js etc)",
             "Type": "String",
             "Default": "python3.11"
-		},
+        },
 
         "ADDEC2InstanceName": {
             "Description": "Name of the EC2 machine to be created",
             "Type": "String",
             "Default": "addserver"
         },
-		
+        
         "ADDEC2InstanceType": {
             "Description": "EC2 instance type",
             "Type": "String",
@@ -114,11 +114,11 @@
             "Default": "ami-0261755bbcb8c4a84"
         },
 
-		"ADDEC2InstanceTagName":{
+        "ADDEC2InstanceTagName":{
             "Description": "Tag to be created for EC2",
             "Type": "String",
             "Default": "Name"
-		},
+        },
 
         "ADDIdentifierTagName": {
             "Description": "Tag Name to be used while creating resources",
@@ -131,36 +131,36 @@
             "Type": "String",
             "Default": "anomalydatadetector"
         },
-		
-		"ADDEC2AdminRoleName": {
+        
+        "ADDEC2AdminRoleName": {
             "Description": "Name of ec2 IAM admin role",
             "Type": "String",
             "Default": "addec2adminrole"
-		},
+        },
 
-		"ADDLambdaAdminRoleName": {
+        "ADDLambdaAdminRoleName": {
             "Description": "Name of ec2 lambda admin role",
             "Type": "String",
             "Default": "addlambdaadminrole"
-		},
+        },
 
-		"ADDCodeBuildAdminRoleName": {
+        "ADDCodeBuildAdminRoleName": {
             "Description": "Name of codebuild IAM admin role",
             "Type": "String",
             "Default": "addcodebuildadminrole"
-		},
+        },
 
-		"ADDCodeDeployAdminRoleName": {
+        "ADDCodeDeployAdminRoleName": {
             "Description": "Name of codedeploy IAM admin role",
             "Type": "String",
             "Default": "addcodedeployadminrole"
-		},
+        },
 
-		"ADDCodePipelineAdminRoleName": {
+        "ADDCodePipelineAdminRoleName": {
             "Description": "Name of codepipeline IAM admin role",
             "Type": "String",
             "Default": "addcodepipelineadminrole"
-		}
+        }
 
     },
 
@@ -185,22 +185,22 @@
                         }
                     ]
                 },
-				"ManagedPolicyArns" : ["arn:aws:iam::aws:policy/AdministratorAccess"],
-				"RoleName": {
-					"Ref": "ADDEC2AdminRoleName"
-				},
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-			}
-		},
+                "ManagedPolicyArns" : ["arn:aws:iam::aws:policy/AdministratorAccess"],
+                "RoleName": {
+                    "Ref": "ADDEC2AdminRoleName"
+                },
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+        },
 
         "ADDEC2AdminRoleInstance": {
             "Type": "AWS::IAM::InstanceProfile",
@@ -211,9 +211,9 @@
                         "Ref": "ADDEC2AdminRole"
                     }
                 ],
-				"InstanceProfileName" : {
-					"Ref": "ADDEC2AdminRoleName"
-				}
+                "InstanceProfileName" : {
+                    "Ref": "ADDEC2AdminRoleName"
+                }
             }
         },
 
@@ -236,22 +236,22 @@
                         }
                     ]
                 },
-				"ManagedPolicyArns" : ["arn:aws:iam::aws:policy/AdministratorAccess"],
-				"RoleName": {
-					"Ref": "ADDLambdaAdminRoleName"
-				},
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-			}
-		},
+                "ManagedPolicyArns" : ["arn:aws:iam::aws:policy/AdministratorAccess"],
+                "RoleName": {
+                    "Ref": "ADDLambdaAdminRoleName"
+                },
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+        },
 
         "ADDLambdaAdminRoleInstance": {
             "Type": "AWS::IAM::InstanceProfile",
@@ -262,9 +262,9 @@
                         "Ref": "ADDLambdaAdminRole"
                     }
                 ],
-				"InstanceProfileName" : {
-					"Ref": "ADDLambdaAdminRoleName"
-				}
+                "InstanceProfileName" : {
+                    "Ref": "ADDLambdaAdminRoleName"
+                }
             }
         },
 
@@ -287,22 +287,22 @@
                         }
                     ]
                 },
-				"ManagedPolicyArns" : ["arn:aws:iam::aws:policy/AdministratorAccess"],
-				"RoleName": {
-					"Ref": "ADDCodeDeployAdminRoleName"
-				},
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-			}
-		},
+                "ManagedPolicyArns" : ["arn:aws:iam::aws:policy/AdministratorAccess"],
+                "RoleName": {
+                    "Ref": "ADDCodeDeployAdminRoleName"
+                },
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+        },
 
         "ADDCodeDeployAdminRoleInstance": {
             "Type": "AWS::IAM::InstanceProfile",
@@ -313,9 +313,9 @@
                         "Ref": "ADDCodeDeployAdminRole"
                     }
                 ],
-				"InstanceProfileName" : {
-					"Ref": "ADDCodeDeployAdminRoleName"
-				}
+                "InstanceProfileName" : {
+                    "Ref": "ADDCodeDeployAdminRoleName"
+                }
             }
         },
 
@@ -338,22 +338,22 @@
                         }
                     ]
                 },
-				"ManagedPolicyArns" : ["arn:aws:iam::aws:policy/AdministratorAccess"],
-				"RoleName": {
-					"Ref": "ADDCodeBuildAdminRoleName"
-				},
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-			}
-		},
+                "ManagedPolicyArns" : ["arn:aws:iam::aws:policy/AdministratorAccess"],
+                "RoleName": {
+                    "Ref": "ADDCodeBuildAdminRoleName"
+                },
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+        },
 
         "ADDCodeBuildAdminRoleInstance": {
             "Type": "AWS::IAM::InstanceProfile",
@@ -364,9 +364,9 @@
                         "Ref": "ADDCodeBuildAdminRole"
                     }
                 ],
-				"InstanceProfileName" : {
-					"Ref": "ADDCodeBuildAdminRoleName"
-				}
+                "InstanceProfileName" : {
+                    "Ref": "ADDCodeBuildAdminRoleName"
+                }
             }
         },
 
@@ -389,64 +389,64 @@
                         }
                     ]
                 },
-				"ManagedPolicyArns" : ["arn:aws:iam::aws:policy/AdministratorAccess"],
-				"RoleName": {
-					"Ref": "ADDCodePipelineAdminRoleName"
-				},
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-			}
-		},
+                "ManagedPolicyArns" : ["arn:aws:iam::aws:policy/AdministratorAccess"],
+                "RoleName": {
+                    "Ref": "ADDCodePipelineAdminRoleName"
+                },
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+        },
 
-		"ADDVPC": {
-			"Type": "AWS::EC2::VPC",
-			"Properties": {
-				"CidrBlock": "10.0.0.0/16",
-				"EnableDnsHostnames": "true",
-				"EnableDnsSupport": "true",
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-			}
-		},
+        "ADDVPC": {
+            "Type": "AWS::EC2::VPC",
+            "Properties": {
+                "CidrBlock": "10.0.0.0/16",
+                "EnableDnsHostnames": "true",
+                "EnableDnsSupport": "true",
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+        },
 
-		"ADDSubnet": {
-			"Type": "AWS::EC2::Subnet",
-			"Properties": {
-				"VpcId": {
-					"Ref": "ADDVPC"
-				},
-				"CidrBlock": "10.0.1.0/24",
-				"AvailabilityZone": "us-east-1a",
-				"MapPublicIpOnLaunch": "true",
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-			}
-		},
-		
+        "ADDSubnet": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "ADDVPC"
+                },
+                "CidrBlock": "10.0.1.0/24",
+                "AvailabilityZone": "us-east-1a",
+                "MapPublicIpOnLaunch": "true",
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+        },
+        
        "ADDSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
@@ -480,144 +480,144 @@
                         "CidrIp": "0.0.0.0/0"
                     }
                 ],
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
             }
         },
-		
-		"ADDIG": {
-			"Type": "AWS::EC2::InternetGateway",
-			"Properties": {
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-			}
-			
-		},
-		
-		"ADDRouteTable" : {
-			"Type" : "AWS::EC2::RouteTable",
-			"Properties" : {
-				"VpcId" : {
-					"Ref" : "ADDVPC"
-				},
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-			}
-		},
+        
+        "ADDIG": {
+            "Type": "AWS::EC2::InternetGateway",
+            "Properties": {
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+            
+        },
+        
+        "ADDRouteTable" : {
+            "Type" : "AWS::EC2::RouteTable",
+            "Properties" : {
+                "VpcId" : {
+                    "Ref" : "ADDVPC"
+                },
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+        },
 
-		"ADDSubnetRouteTableAssociation" : {
-		   "Type" : "AWS::EC2::SubnetRouteTableAssociation",
-		   "Properties" : {
-			   "SubnetId" : { 
-					"Ref" : "ADDSubnet" 
-				},
-				"RouteTableId" : { 
-					"Ref" : "ADDRouteTable" 
-				}
-			}
-		},
+        "ADDSubnetRouteTableAssociation" : {
+           "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+           "Properties" : {
+               "SubnetId" : { 
+                    "Ref" : "ADDSubnet" 
+                },
+                "RouteTableId" : { 
+                    "Ref" : "ADDRouteTable" 
+                }
+            }
+        },
 
-		"ADDRoute" : {
-			"Type" : "AWS::EC2::Route",
-			"Properties" : {
-				"RouteTableId" : { 
-					"Ref" : "ADDRouteTable" 
-				},
-				"DestinationCidrBlock" : "0.0.0.0/0",
-				"GatewayId" : { 
-					"Ref" : "ADDIG"
-				}
-			}
-		},
+        "ADDRoute" : {
+            "Type" : "AWS::EC2::Route",
+            "Properties" : {
+                "RouteTableId" : { 
+                    "Ref" : "ADDRouteTable" 
+                },
+                "DestinationCidrBlock" : "0.0.0.0/0",
+                "GatewayId" : { 
+                    "Ref" : "ADDIG"
+                }
+            }
+        },
 
-		"ADDVPCGatewayAttachment" : {
-			"Type" : "AWS::EC2::VPCGatewayAttachment",
-			"Properties" : {
-				"InternetGatewayId" : {
-					"Ref" : "ADDIG"
-				},
-				"VpcId" : {
-					"Ref" : "ADDVPC"
-				}
-			}
-		},
+        "ADDVPCGatewayAttachment" : {
+            "Type" : "AWS::EC2::VPCGatewayAttachment",
+            "Properties" : {
+                "InternetGatewayId" : {
+                    "Ref" : "ADDIG"
+                },
+                "VpcId" : {
+                    "Ref" : "ADDVPC"
+                }
+            }
+        },
 
-		"ADDEC2KeyPair": {
-			"Type" : "AWS::EC2::KeyPair",
-			"Properties" : {
-				"KeyName" : {
-					"Ref" : "ADDEC2KeypairName"
-				},
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-			}
-		},		
+        "ADDEC2KeyPair": {
+            "Type" : "AWS::EC2::KeyPair",
+            "Properties" : {
+                "KeyName" : {
+                    "Ref" : "ADDEC2KeypairName"
+                },
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+        },      
 
         "ADDEC2Instance": {
             "Type": "AWS::EC2::Instance",
             "Properties": {
-				"IamInstanceProfile" : {
-					"Ref" : "ADDEC2AdminRoleInstance"
-				},
-				"Tags": [
-					{
-						"Key" : {
-							"Ref" : "ADDEC2InstanceTagName"
-						},
-						"Value" : {
-							"Ref": "ADDEC2InstanceName"
-						}
-					},
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				],                
-				"InstanceType": {
+                "IamInstanceProfile" : {
+                    "Ref" : "ADDEC2AdminRoleInstance"
+                },
+                "Tags": [
+                    {
+                        "Key" : {
+                            "Ref" : "ADDEC2InstanceTagName"
+                        },
+                        "Value" : {
+                            "Ref": "ADDEC2InstanceName"
+                        }
+                    },
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ],                
+                "InstanceType": {
                     "Ref": "ADDEC2InstanceType"
                 },
                 "ImageId": {
                     "Ref": "ADDEC2InstanceAMI"
                 },
-				"KeyName" : {
-					"Ref": "ADDEC2KeyPair"
-				},
+                "KeyName" : {
+                    "Ref": "ADDEC2KeyPair"
+                },
                 "NetworkInterfaces": [
                     {
                         "GroupSet": [
@@ -625,7 +625,7 @@
                                 "Ref": "ADDSecurityGroup"
                             }
                         ],
-						"DeviceIndex": "0",
+                        "DeviceIndex": "0",
                         "SubnetId": {
                             "Ref": "ADDSubnet"
                         }
@@ -637,17 +637,17 @@
                             "\n",
                             [
                                 "#!/bin/bash",
-								"sudo apt-get update",
-								"sudo apt install python3-pip -y",
-								"pip install boto3",
-								"sudo apt update",
-								"sudo apt install ruby-full -y",
-								"sudo apt install wget",
-								"cd /home/ubuntu",
-								"wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install",
-								"chmod +x ./install",
-								"sudo ./install auto",
-								"sudo service codedeploy-agent status"
+                                "sudo apt-get update",
+                                "sudo apt install python3-pip -y",
+                                "pip install boto3",
+                                "sudo apt update",
+                                "sudo apt install ruby-full -y",
+                                "sudo apt install wget",
+                                "cd /home/ubuntu",
+                                "wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install",
+                                "chmod +x ./install",
+                                "sudo ./install auto",
+                                "sudo service codedeploy-agent status"
                             ]
                         ]
                     }
@@ -656,20 +656,20 @@
         },
 
         "ADDDBTable" : {
-  			"Type" : "AWS::DynamoDB::Table",
-  			"Properties" : {
-      			"AttributeDefinitions" : [
-      			 	{
-  						"AttributeName" : "deviceid",
-  						"AttributeType" : "S"
-					}, 
-					{
-  						"AttributeName" : "timestamp",
-  						"AttributeType" : "S"
-					}
-      			 ],
-      			"KeySchema" : [
-      				{
+            "Type" : "AWS::DynamoDB::Table",
+            "Properties" : {
+                "AttributeDefinitions" : [
+                    {
+                        "AttributeName" : "deviceid",
+                        "AttributeType" : "S"
+                    }, 
+                    {
+                        "AttributeName" : "timestamp",
+                        "AttributeType" : "S"
+                    }
+                 ],
+                "KeySchema" : [
+                    {
                         "AttributeName": "deviceid",
                         "KeyType": "HASH"
                     },
@@ -678,603 +678,603 @@
                         "KeyType": "RANGE"
                     }
                 ],
-      			"TableName" : {
-					"Ref" : "ADDDynamoDBTableName"
-				},
-      			"ProvisionedThroughput": {
+                "TableName" : {
+                    "Ref" : "ADDDynamoDBTableName"
+                },
+                "ProvisionedThroughput": {
                     "ReadCapacityUnits": 2,
                     "WriteCapacityUnits": 2
                 },
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-    		}
-		},
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+        },
 
-		"ADDKinesisDatastream": {
-			"Type" : "AWS::Kinesis::Stream",
-			"Properties" : {
-				"Name" : {
-					"Ref" : "ADDKinesisDataStreamName"
-				},
-				"ShardCount" : 1,
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-			}
-		},
+        "ADDKinesisDatastream": {
+            "Type" : "AWS::Kinesis::Stream",
+            "Properties" : {
+                "Name" : {
+                    "Ref" : "ADDKinesisDataStreamName"
+                },
+                "ShardCount" : 1,
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+        },
 
-		"ADDSNSAlertTopic": {
-			"Type" : "AWS::SNS::Topic",
-			"Properties" : {
-				"TopicName" : {
-					"Ref" : "ADDSNSAlertTopicName"
-				},
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-			}
-		},
+        "ADDSNSAlertTopic": {
+            "Type" : "AWS::SNS::Topic",
+            "Properties" : {
+                "TopicName" : {
+                    "Ref" : "ADDSNSAlertTopicName"
+                },
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+        },
 
-		"ADDSNSEmailSubscription": {
-			"Type" : "AWS::SNS::Subscription",
-			"Properties" : {
-				"Endpoint" : {
-					"Ref": "ADDSubscriptionEmailID"
-				},
-				"Protocol" : "email",
-				"TopicArn" : {
-					"Ref": "ADDSNSAlertTopic"
-				}
-			}
-		},
+        "ADDSNSEmailSubscription": {
+            "Type" : "AWS::SNS::Subscription",
+            "Properties" : {
+                "Endpoint" : {
+                    "Ref": "ADDSubscriptionEmailID"
+                },
+                "Protocol" : "email",
+                "TopicArn" : {
+                    "Ref": "ADDSNSAlertTopic"
+                }
+            }
+        },
 
-		"ADDS3Bucket" : {
-			"Type" : "AWS::S3::Bucket",
-			"Properties": {
-				"BucketName": {
-					"Ref" : "ADDS3BucketName"
-				},
+        "ADDS3Bucket" : {
+            "Type" : "AWS::S3::Bucket",
+            "Properties": {
+                "BucketName": {
+                    "Ref" : "ADDS3BucketName"
+                },
                 "NotificationConfiguration": {
                     "LambdaConfigurations": [
                         {
                             "Function": {
-								"Fn::GetAtt": [
-									"ADDCodeBuildEventLambdaFunction", "Arn"
-								]
-							},
+                                "Fn::GetAtt": [
+                                    "ADDCodeBuildEventLambdaFunction", "Arn"
+                                ]
+                            },
                             "Event": "s3:ObjectCreated:*"
                         }
                     ]
                 },
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-            }		
-		},
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }       
+        },
 
-		"ADDCodeCommitRepository": {
-			"Type" : "AWS::CodeCommit::Repository",
-			"DependsOn" : "ADDS3Bucket",
-			"Properties" : {
-				"RepositoryName" : {
-					"Ref": "ADDCodeCommitRepositoryName"
-				},
-				"Triggers": [
-					{
-						"Name": "committrigger",
-						"CustomData": "new commit",
-						"DestinationArn": {
-							"Fn::GetAtt": [
-								"ADDCodeCommitEventLambdaFunction", "Arn"
-							]
-						},
-						"Branches": [
-							"main"
-						],
-						"Events": [
-							"all"
-						]
-					}
-				],
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-			}
-		},
+        "ADDCodeCommitRepository": {
+            "Type" : "AWS::CodeCommit::Repository",
+            "DependsOn" : "ADDS3Bucket",
+            "Properties" : {
+                "RepositoryName" : {
+                    "Ref": "ADDCodeCommitRepositoryName"
+                },
+                "Triggers": [
+                    {
+                        "Name": "committrigger",
+                        "CustomData": "new commit",
+                        "DestinationArn": {
+                            "Fn::GetAtt": [
+                                "ADDCodeCommitEventLambdaFunction", "Arn"
+                            ]
+                        },
+                        "Branches": [
+                            "main"
+                        ],
+                        "Events": [
+                            "all"
+                        ]
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+        },
 
-		"ADDCodeCommitWaitHandle" : {
-			"Type" : "AWS::CloudFormation::WaitConditionHandle",
-			"Properties" : {
-			}
-		},
-		
-		"ADDCodeCommitWaitCondition" : {
-			"Type" : "AWS::CloudFormation::WaitCondition",
-			"Properties" : {
-				"Count" : 1,
-				"Handle" : { "Ref" : "ADDCodeCommitWaitHandle" },
-				"Timeout" : "4500"
-			}
-		},
-		
-		"ADDCodeCommitEventLambdaFunction": {
-			"Type": "AWS::Lambda::Function",
-			"Properties": {
-				"FunctionName": "addcodecommitlambdafunction",
-				"Handler": "index.lambda_handler",
-				"Role": { 
-					"Fn::GetAtt" : [
-						"ADDLambdaAdminRole", "Arn" 
-						]
-				},
-				"Code": {
-					"ZipFile": {
-						"Fn::Join": [
-							"\n",
-							[
-							"import boto3",
-							"import os",
-							"import urllib3",
-							"import json",
-							"def lambda_handler(event, context):",
-							"    client = boto3.client('codebuild')",
-							"    response = client.start_build(projectName='addcodebuildproject')",
-							"    mywaithandle = os.environ['URL']",
-							"    data = {'Status': 'SUCCESS', 'Reason': 'S3 object created', 'UniqueId': 'ID1234', 'Data': 'Wait signalled'}",
-							"    http = urllib3.PoolManager()",
-							"    response = http.request('PUT', mywaithandle, body=json.dumps(data))",
-							"    print('Response code for PUT request : ',response.status)"
-							]
-						]
-					}
-				},
-				"Environment":{
-					"Variables":{
-						"URL":{
-							"Ref" : "ADDCodeCommitWaitHandle"
-						}
-					}
-				},
-				"Runtime": "python3.11"
-			}
-		},
-		
-		"ADDCodeCommitEventLambdaFunctionPersmission": {
-			"Type" : "AWS::Lambda::Permission",
-			"Properties" : {
-				"Action" : "lambda:InvokeFunction",
-				"FunctionName" : {
-					"Fn::GetAtt": [
-						"ADDCodeCommitEventLambdaFunction","Arn"
-					]
-				},
-				"Principal" : "*"
-			}
-		},
+        "ADDCodeCommitWaitHandle" : {
+            "Type" : "AWS::CloudFormation::WaitConditionHandle",
+            "Properties" : {
+            }
+        },
+        
+        "ADDCodeCommitWaitCondition" : {
+            "Type" : "AWS::CloudFormation::WaitCondition",
+            "Properties" : {
+                "Count" : 1,
+                "Handle" : { "Ref" : "ADDCodeCommitWaitHandle" },
+                "Timeout" : "4500"
+            }
+        },
+        
+        "ADDCodeCommitEventLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "FunctionName": "addcodecommitlambdafunction",
+                "Handler": "index.lambda_handler",
+                "Role": { 
+                    "Fn::GetAtt" : [
+                        "ADDLambdaAdminRole", "Arn" 
+                        ]
+                },
+                "Code": {
+                    "ZipFile": {
+                        "Fn::Join": [
+                            "\n",
+                            [
+                            "import boto3",
+                            "import os",
+                            "import urllib3",
+                            "import json",
+                            "def lambda_handler(event, context):",
+                            "    client = boto3.client('codebuild')",
+                            "    response = client.start_build(projectName='addcodebuildproject')",
+                            "    mywaithandle = os.environ['URL']",
+                            "    data = {'Status': 'SUCCESS', 'Reason': 'S3 object created', 'UniqueId': 'ID1234', 'Data': 'Wait signalled'}",
+                            "    http = urllib3.PoolManager()",
+                            "    response = http.request('PUT', mywaithandle, body=json.dumps(data))",
+                            "    print('Response code for PUT request : ',response.status)"
+                            ]
+                        ]
+                    }
+                },
+                "Environment":{
+                    "Variables":{
+                        "URL":{
+                            "Ref" : "ADDCodeCommitWaitHandle"
+                        }
+                    }
+                },
+                "Runtime": "python3.11"
+            }
+        },
+        
+        "ADDCodeCommitEventLambdaFunctionPersmission": {
+            "Type" : "AWS::Lambda::Permission",
+            "Properties" : {
+                "Action" : "lambda:InvokeFunction",
+                "FunctionName" : {
+                    "Fn::GetAtt": [
+                        "ADDCodeCommitEventLambdaFunction","Arn"
+                    ]
+                },
+                "Principal" : "*"
+            }
+        },
 
-		"ADDCodeBuildWaitHandle" : {
-			"Type" : "AWS::CloudFormation::WaitConditionHandle",
-			"Properties" : {
-			}
-		},
-		
-		"ADDCodeBuildWaitCondition" : {
-			"Type" : "AWS::CloudFormation::WaitCondition",
-			"Properties" : {
-				"Count" : 1,
-				"Handle" : { "Ref" : "ADDCodeBuildWaitHandle" },
-				"Timeout" : "4500"
-			}
-		},
-		
-		"ADDCodeBuildEventLambdaFunction": {
-			"Type": "AWS::Lambda::Function",
-			"Properties": {
-				"FunctionName": "addcodebuildlambdafunction",
-				"Handler": "index.lambda_handler",
-				"Role": { 
-					"Fn::GetAtt" : [
-						"ADDLambdaAdminRole", "Arn" 
-						]
-				},
-				"Code": {
-					"ZipFile": {
-						"Fn::Join": [
-							"\n",
-							[
-							"import boto3",
-							"import os",
-							"import urllib3",
-							"import json",
-							"def lambda_handler(event, context):",
-							"    mywaithandle = os.environ['URL']",
-							"    data = {'Status': 'SUCCESS', 'Reason': 'S3 object created', 'UniqueId': 'ID1234', 'Data': 'Wait signalled'}",
-							"    http = urllib3.PoolManager()",
-							"    response = http.request('PUT', mywaithandle, body=json.dumps(data))",
-							"    print('Response code for PUT request : ',response.status)"
-							]
-						]
-					}
-				},
-				"Environment":{
-					"Variables":{
-						"URL":{
-							"Ref" : "ADDCodeBuildWaitHandle"
-						}
-					}
-				},
-				"Runtime": "python3.11"
-			}
-		},
-		
-		"ADDCodeBuildEventLambdaFunctionPersmission": {
-			"Type" : "AWS::Lambda::Permission",
-			"Properties" : {
-				"Action" : "lambda:InvokeFunction",
-				"FunctionName" : {
-					"Fn::GetAtt": [
-						"ADDCodeBuildEventLambdaFunction","Arn"
-					]
-				},
-				"Principal" : "*"
-			}
-		},
-		
-		"ADDCodeBuildProject": {
-			"Type" : "AWS::CodeBuild::Project",
-			"DependsOn" : "ADDS3Bucket",
-			"Properties" : {
-				"Name" : {
-					"Ref": "ADDCodeBuildProjectName"
-				},
-				"Source" : {
-					"Type" : "CODECOMMIT",
-					"Location" : {
-						"Fn::GetAtt": [
-							"ADDCodeCommitRepository", "CloneUrlHttp"
-						]
-					}
-				},
-				"Artifacts" : {
-					"Type" : "S3",
-					"Location" : {
-						"Ref" : "ADDS3BucketName"
-					},
-					"Name": "/",
-					"Path": ""
-				},
-				"ServiceRole": {
-					"Fn::GetAtt": [
-						"ADDCodeBuildAdminRole", "Arn"
-					]
-				},
-				"Environment": {
-					"ComputeType": "BUILD_GENERAL1_SMALL",
-					"Image": "aws/codebuild/amazonlinux2-aarch64-standard:2.0",
-					"ImagePullCredentialsType": "CODEBUILD",
-					"Type": "ARM_CONTAINER"
-				},
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-			}
-		},
+        "ADDCodeBuildWaitHandle" : {
+            "Type" : "AWS::CloudFormation::WaitConditionHandle",
+            "Properties" : {
+            }
+        },
+        
+        "ADDCodeBuildWaitCondition" : {
+            "Type" : "AWS::CloudFormation::WaitCondition",
+            "Properties" : {
+                "Count" : 1,
+                "Handle" : { "Ref" : "ADDCodeBuildWaitHandle" },
+                "Timeout" : "4500"
+            }
+        },
+        
+        "ADDCodeBuildEventLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "FunctionName": "addcodebuildlambdafunction",
+                "Handler": "index.lambda_handler",
+                "Role": { 
+                    "Fn::GetAtt" : [
+                        "ADDLambdaAdminRole", "Arn" 
+                        ]
+                },
+                "Code": {
+                    "ZipFile": {
+                        "Fn::Join": [
+                            "\n",
+                            [
+                            "import boto3",
+                            "import os",
+                            "import urllib3",
+                            "import json",
+                            "def lambda_handler(event, context):",
+                            "    mywaithandle = os.environ['URL']",
+                            "    data = {'Status': 'SUCCESS', 'Reason': 'S3 object created', 'UniqueId': 'ID1234', 'Data': 'Wait signalled'}",
+                            "    http = urllib3.PoolManager()",
+                            "    response = http.request('PUT', mywaithandle, body=json.dumps(data))",
+                            "    print('Response code for PUT request : ',response.status)"
+                            ]
+                        ]
+                    }
+                },
+                "Environment":{
+                    "Variables":{
+                        "URL":{
+                            "Ref" : "ADDCodeBuildWaitHandle"
+                        }
+                    }
+                },
+                "Runtime": "python3.11"
+            }
+        },
+        
+        "ADDCodeBuildEventLambdaFunctionPersmission": {
+            "Type" : "AWS::Lambda::Permission",
+            "Properties" : {
+                "Action" : "lambda:InvokeFunction",
+                "FunctionName" : {
+                    "Fn::GetAtt": [
+                        "ADDCodeBuildEventLambdaFunction","Arn"
+                    ]
+                },
+                "Principal" : "*"
+            }
+        },
+        
+        "ADDCodeBuildProject": {
+            "Type" : "AWS::CodeBuild::Project",
+            "DependsOn" : "ADDS3Bucket",
+            "Properties" : {
+                "Name" : {
+                    "Ref": "ADDCodeBuildProjectName"
+                },
+                "Source" : {
+                    "Type" : "CODECOMMIT",
+                    "Location" : {
+                        "Fn::GetAtt": [
+                            "ADDCodeCommitRepository", "CloneUrlHttp"
+                        ]
+                    }
+                },
+                "Artifacts" : {
+                    "Type" : "S3",
+                    "Location" : {
+                        "Ref" : "ADDS3BucketName"
+                    },
+                    "Name": "/",
+                    "Path": ""
+                },
+                "ServiceRole": {
+                    "Fn::GetAtt": [
+                        "ADDCodeBuildAdminRole", "Arn"
+                    ]
+                },
+                "Environment": {
+                    "ComputeType": "BUILD_GENERAL1_SMALL",
+                    "Image": "aws/codebuild/amazonlinux2-aarch64-standard:2.0",
+                    "ImagePullCredentialsType": "CODEBUILD",
+                    "Type": "ARM_CONTAINER"
+                },
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+        },
 
-		"ADDCodeDeployApp": {
-			"Type" : "AWS::CodeDeploy::Application",
-			"DependsOn": "ADDCodeBuildWaitCondition",
-			"Properties" : {
-				"ApplicationName" : {
-					"Ref": "ADDCodeDeployAppName"
-				},
-				"ComputePlatform" : "Server",
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-			}
-		},
-		
-		"ADDCodeDeploymentGroup" : {
-			"Type" : "AWS::CodeDeploy::DeploymentGroup",
-			"Properties" : { 
-				"ApplicationName" : {
-					"Ref" : "ADDCodeDeployApp"
-				},
-				"DeploymentGroupName" : {
-					"Ref" : "ADDCodeDeploymentGroupName"
-				}, 
-				"DeploymentConfigName" : "CodeDeployDefault.AllAtOnce", 
-				"DeploymentStyle" : {
-					  "DeploymentOption" : "WITHOUT_TRAFFIC_CONTROL",
-					  "DeploymentType" : "IN_PLACE"
-				},
-				"Deployment" : {
-					"IgnoreApplicationStopFailures" : "true",
-					"Revision" : {
-						"RevisionType" : "S3",
-						"S3Location": {
-							"Bucket": {
-								"Ref" : "ADDS3BucketName"
-							},
-							"Key": {
-								"Ref" : "AnomalyDataGeneratorS3KeyName"
-							},
-							"BundleType": "zip"
-						}
-					}
-				},
-				"Ec2TagFilters": [ 
-					{
-						"Key" : "Name",
-						"Type" : "KEY_AND_VALUE",
-						"Value" : {
-							"Ref" : "ADDEC2InstanceName"
-						}
-					}
-				],
-				"ServiceRoleArn": {
-					"Fn::GetAtt": [
-						"ADDCodeDeployAdminRole", "Arn"
-					]
-				},
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-			}
-		},
+        "ADDCodeDeployApp": {
+            "Type" : "AWS::CodeDeploy::Application",
+            "DependsOn": "ADDCodeBuildWaitCondition",
+            "Properties" : {
+                "ApplicationName" : {
+                    "Ref": "ADDCodeDeployAppName"
+                },
+                "ComputePlatform" : "Server",
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+        },
+        
+        "ADDCodeDeploymentGroup" : {
+            "Type" : "AWS::CodeDeploy::DeploymentGroup",
+            "Properties" : { 
+                "ApplicationName" : {
+                    "Ref" : "ADDCodeDeployApp"
+                },
+                "DeploymentGroupName" : {
+                    "Ref" : "ADDCodeDeploymentGroupName"
+                }, 
+                "DeploymentConfigName" : "CodeDeployDefault.AllAtOnce", 
+                "DeploymentStyle" : {
+                      "DeploymentOption" : "WITHOUT_TRAFFIC_CONTROL",
+                      "DeploymentType" : "IN_PLACE"
+                },
+                "Deployment" : {
+                    "IgnoreApplicationStopFailures" : "true",
+                    "Revision" : {
+                        "RevisionType" : "S3",
+                        "S3Location": {
+                            "Bucket": {
+                                "Ref" : "ADDS3BucketName"
+                            },
+                            "Key": {
+                                "Ref" : "AnomalyDataGeneratorS3KeyName"
+                            },
+                            "BundleType": "zip"
+                        }
+                    }
+                },
+                "Ec2TagFilters": [ 
+                    {
+                        "Key" : "Name",
+                        "Type" : "KEY_AND_VALUE",
+                        "Value" : {
+                            "Ref" : "ADDEC2InstanceName"
+                        }
+                    }
+                ],
+                "ServiceRoleArn": {
+                    "Fn::GetAtt": [
+                        "ADDCodeDeployAdminRole", "Arn"
+                    ]
+                },
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+        },
 
-		"ADDCodePipeline": {
-			"Type": "AWS::CodePipeline::Pipeline",
-			"DependsOn" : "ADDCodeDeploymentGroup",
-			"Properties":{
-				"ArtifactStore": {
-					"Location" : {
-						"Ref" : "ADDS3BucketName"
-					},
-					"Type" : "S3"
-				},
-				"Name" : {
-					"Ref" : "ADDCodePipelineName"
-				},
-				"RoleArn" : {
-					"Fn::GetAtt": [
-						"ADDCodePipelineAdminRole", "Arn"
-					]
-				},
+        "ADDCodePipeline": {
+            "Type": "AWS::CodePipeline::Pipeline",
+            "DependsOn" : "ADDCodeDeploymentGroup",
+            "Properties":{
+                "ArtifactStore": {
+                    "Location" : {
+                        "Ref" : "ADDS3BucketName"
+                    },
+                    "Type" : "S3"
+                },
+                "Name" : {
+                    "Ref" : "ADDCodePipelineName"
+                },
+                "RoleArn" : {
+                    "Fn::GetAtt": [
+                        "ADDCodePipelineAdminRole", "Arn"
+                    ]
+                },
 
-				"Stages": [
-					{
-						"Name": "Source",
-						"Actions": [{
-							"Name": "SourceAction",
-							"ActionTypeId": {
-								"Category": "Source", 
-								"Owner": "AWS",
-								"Version": "1",
-								"Provider": "CodeCommit" 
-							},
-							"OutputArtifacts": [ 
-								{
-									"Name": "SourceArtifact"
-								}
-							],
-							"Configuration": {
-								"BranchName": "main",
-								"RepositoryName": {
-									"Ref": "ADDCodeCommitRepositoryName"
-								}
-							},
-							"RunOrder": 1
-						}]
-					},
-					{
-						"Name": "Build",
-						"Actions": [{
-							"Name": "Build",
-							"ActionTypeId": {
-								"Category": "Build", 
-								"Owner": "AWS",
-								"Version": "1",
-								"Provider": "CodeBuild" 
-							},
-							"Configuration" : {
-								"ProjectName" : {
-									"Ref" : "ADDCodeBuildProjectName"
-								}
-							},
-							"InputArtifacts" : [{
-								"Name" : "SourceArtifact"
-								
-							}],
-							
-							"OutputArtifacts": [ 
-								{
-									"Name": "BuildArtifact"
-								}
-							],
-							
-							"RunOrder": 1
-						}]
-					},
-					{
-						"Name": "Deploy",
-						"Actions": [{
-							"Name": "Deploy",
-							"ActionTypeId": {
-								"Category": "Deploy", 
-								"Owner": "AWS",
-								"Version": "1",
-								"Provider": "CodeDeploy" 
-							},
+                "Stages": [
+                    {
+                        "Name": "Source",
+                        "Actions": [{
+                            "Name": "SourceAction",
+                            "ActionTypeId": {
+                                "Category": "Source", 
+                                "Owner": "AWS",
+                                "Version": "1",
+                                "Provider": "CodeCommit" 
+                            },
+                            "OutputArtifacts": [ 
+                                {
+                                    "Name": "SourceArtifact"
+                                }
+                            ],
+                            "Configuration": {
+                                "BranchName": "main",
+                                "RepositoryName": {
+                                    "Ref": "ADDCodeCommitRepositoryName"
+                                }
+                            },
+                            "RunOrder": 1
+                        }]
+                    },
+                    {
+                        "Name": "Build",
+                        "Actions": [{
+                            "Name": "Build",
+                            "ActionTypeId": {
+                                "Category": "Build", 
+                                "Owner": "AWS",
+                                "Version": "1",
+                                "Provider": "CodeBuild" 
+                            },
+                            "Configuration" : {
+                                "ProjectName" : {
+                                    "Ref" : "ADDCodeBuildProjectName"
+                                }
+                            },
+                            "InputArtifacts" : [{
+                                "Name" : "SourceArtifact"
+                                
+                            }],
+                            
+                            "OutputArtifacts": [ 
+                                {
+                                    "Name": "BuildArtifact"
+                                }
+                            ],
+                            
+                            "RunOrder": 1
+                        }]
+                    },
+                    {
+                        "Name": "Deploy",
+                        "Actions": [{
+                            "Name": "Deploy",
+                            "ActionTypeId": {
+                                "Category": "Deploy", 
+                                "Owner": "AWS",
+                                "Version": "1",
+                                "Provider": "CodeDeploy" 
+                            },
 
-							"Configuration" : {
-								"ApplicationName" : {
-									"Ref":"ADDCodeDeployAppName"
-								},
-								"DeploymentGroupName" : {
-									"Ref" : "ADDCodeDeploymentGroupName"
-								}
-							},
-							
-							"InputArtifacts" : [{
-								"Name" : "BuildArtifact"
-								
-							}],
-							
-							"RunOrder": 1
-						}]
-					}
-				],
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-			}
-		},
-		
-		"ADDLambdaFunction": {
-			"Type": "AWS::Lambda::Function",
-			"DependsOn" : "ADDCodeDeployApp",
-			"Properties": {
-				"FunctionName": {
-					"Ref" : "ADDLambdaFunctionName"
-				},
-				"Description": "Anomaly Detector",
-				"Handler": "anomaly_detection.lambda_handler",
-				"Role": { 
-					"Fn::GetAtt" : [
-						"ADDLambdaAdminRole", "Arn" 
-						]
-				},
-				"Code": {
-					"S3Bucket": {
-						"Ref": "ADDS3BucketName"
-					},
-					"S3Key": {
-						"Ref" : "ADDLambdaS3KeyName"
-					}
-				},
-				"Environment":{
-					"Variables":{
-						"dynamoDBTableName":{
-							"Ref":"ADDDBTable"
-						},
-						"topicArn":{
-							"Ref":"ADDSNSAlertTopic"
-						}
-					}
-				},
-				"Runtime": {
-					"Ref" : "ADDLambdaEnvName"
-				},
-				"Tags": [
-					{
-						"Key": {
-							"Ref": "ADDIdentifierTagName"
-						},
-						"Value": {
-							"Ref": "ADDIdentifierTagValue"
-						}
-					}
-				]
-			}
-		},
-		
-		"ADDLambdaEventSource": {
-			"Type": "AWS::Lambda::EventSourceMapping",
-			"DependsOn" : "ADDLambdaFunction",
-			"Properties": {
-				"FunctionName": {
-					"Ref": "ADDLambdaFunction"
-				},
-				"Enabled": true,
-				"EventSourceArn": {
-					"Fn::GetAtt": [
-						"ADDKinesisDatastream",
-						"Arn"
-					]
-				},
-				"StartingPosition": "LATEST"
-			}
-		}
-	},
+                            "Configuration" : {
+                                "ApplicationName" : {
+                                    "Ref":"ADDCodeDeployAppName"
+                                },
+                                "DeploymentGroupName" : {
+                                    "Ref" : "ADDCodeDeploymentGroupName"
+                                }
+                            },
+                            
+                            "InputArtifacts" : [{
+                                "Name" : "BuildArtifact"
+                                
+                            }],
+                            
+                            "RunOrder": 1
+                        }]
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+        },
+        
+        "ADDLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "DependsOn" : "ADDCodeDeployApp",
+            "Properties": {
+                "FunctionName": {
+                    "Ref" : "ADDLambdaFunctionName"
+                },
+                "Description": "Anomaly Detector",
+                "Handler": "anomaly_detection.lambda_handler",
+                "Role": { 
+                    "Fn::GetAtt" : [
+                        "ADDLambdaAdminRole", "Arn" 
+                        ]
+                },
+                "Code": {
+                    "S3Bucket": {
+                        "Ref": "ADDS3BucketName"
+                    },
+                    "S3Key": {
+                        "Ref" : "ADDLambdaS3KeyName"
+                    }
+                },
+                "Environment":{
+                    "Variables":{
+                        "dynamoDBTableName":{
+                            "Ref":"ADDDBTable"
+                        },
+                        "topicArn":{
+                            "Ref":"ADDSNSAlertTopic"
+                        }
+                    }
+                },
+                "Runtime": {
+                    "Ref" : "ADDLambdaEnvName"
+                },
+                "Tags": [
+                    {
+                        "Key": {
+                            "Ref": "ADDIdentifierTagName"
+                        },
+                        "Value": {
+                            "Ref": "ADDIdentifierTagValue"
+                        }
+                    }
+                ]
+            }
+        },
+        
+        "ADDLambdaEventSource": {
+            "Type": "AWS::Lambda::EventSourceMapping",
+            "DependsOn" : "ADDLambdaFunction",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "ADDLambdaFunction"
+                },
+                "Enabled": true,
+                "EventSourceArn": {
+                    "Fn::GetAtt": [
+                        "ADDKinesisDatastream",
+                        "Arn"
+                    ]
+                },
+                "StartingPosition": "LATEST"
+            }
+        }
+    },
 
-	"Outputs" : 
-	{
-		"InstanceID" : {
-			"Description" : "InstanceID of the EC2 Instance created",
-			"Value" : { 
-				"Ref" : "ADDEC2Instance" 
-			}
-		},
-		"TopicARN" : {
-			"Description" : "ARN of the m03p02_anomaly_alerts topic created",
-			"Value" : { 
-				"Ref" : "ADDSNSAlertTopic" 
-				}
-		}
-	}
+    "Outputs" : 
+    {
+        "InstanceID" : {
+            "Description" : "InstanceID of the EC2 Instance created",
+            "Value" : { 
+                "Ref" : "ADDEC2Instance" 
+            }
+        },
+        "TopicARN" : {
+            "Description" : "ARN of the m03p02_anomaly_alerts topic created",
+            "Value" : { 
+                "Ref" : "ADDSNSAlertTopic" 
+                }
+        }
+    }
 }
