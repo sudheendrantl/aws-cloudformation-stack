@@ -2,7 +2,7 @@
 
     "AWSTemplateFormatVersion": "2010-09-09",
 
-    "Description": "EC2, Kinesis Data Stream, Dynamo DB, SNS, S3 and Lambda creation (v14)",
+    "Description": "Creates resources like EC2 (with userdata to update environment, install CodeDeploy agent), VPC, VPCGatewayAttachment, IG, Route, RouteTable, RouteTableAsscocation, Subnet, Security Group, Kinesis Data Stream, Dynamo, SNS topic, SNS Subscription, S3, application Lambda (taking source from S3), Lambda EventSourceMapping, WaitHandle, WaitCondition and the correponding lambda functions (with inline source in this template) with Lambda Persmission that wait until code is checked into the repository before creating CodeBuild and waits for build completion before stack creation is completed, CodeCommit, CodeBuild, CodeDeploy for application, CodeDeploymentGroup along with Deployment, Codepipeline, Admin Roles for various services used, their Role instances, EC2 Keypair etc for the application Anomaly Data Dectector(ADD)",
 
     "Parameters": {
 
@@ -756,6 +756,18 @@
 				"BucketName": {
 					"Ref" : "ADDS3BucketName"
 				},
+                "NotificationConfiguration": {
+                    "LambdaConfigurations": [
+                        {
+                            "Function": {
+								"Fn::GetAtt": [
+									"ADDCodeBuildEventLambdaFunction", "Arn"
+								]
+							},
+                            "Event": "s3:ObjectCreated:*"
+                        }
+                    ]
+                },
 				"Tags": [
 					{
 						"Key": {
@@ -776,6 +788,23 @@
 				"RepositoryName" : {
 					"Ref": "ADDCodeCommitRepositoryName"
 				},
+				"Triggers": [
+					{
+						"Name": "committrigger",
+						"CustomData": "new commit",
+						"DestinationArn": {
+							"Fn::GetAtt": [
+								"ADDCodeCommitEventLambdaFunction", "Arn"
+							]
+						},
+						"Branches": [
+							"main"
+						],
+						"Events": [
+							"all"
+						]
+					}
+				],
 				"Tags": [
 					{
 						"Key": {
@@ -789,9 +818,147 @@
 			}
 		},
 
+		"ADDCodeCommitWaitHandle" : {
+			"Type" : "AWS::CloudFormation::WaitConditionHandle",
+			"Properties" : {
+			}
+		},
+		
+		"ADDCodeCommitWaitCondition" : {
+			"Type" : "AWS::CloudFormation::WaitCondition",
+			"Properties" : {
+				"Count" : 1,
+				"Handle" : { "Ref" : "ADDCodeCommitWaitHandle" },
+				"Timeout" : "4500"
+			}
+		},
+		
+		"ADDCodeCommitEventLambdaFunction": {
+			"Type": "AWS::Lambda::Function",
+			"Properties": {
+				"FunctionName": "addcodecommitlambdafunction",
+				"Handler": "index.lambda_handler",
+				"Role": { 
+					"Fn::GetAtt" : [
+						"ADDLambdaAdminRole", "Arn" 
+						]
+				},
+				"Code": {
+					"ZipFile": {
+						"Fn::Join": [
+							"\n",
+							[
+							"import boto3",
+							"import os",
+							"import urllib3",
+							"import json",
+							"def lambda_handler(event, context):",
+							"    client = boto3.client('codebuild')",
+							"    response = client.start_build(projectName='addcodebuildproject')",
+							"    mywaithandle = os.environ['URL']",
+							"    data = {'Status': 'SUCCESS', 'Reason': 'S3 object created', 'UniqueId': 'ID1234', 'Data': 'Wait signalled'}",
+							"    http = urllib3.PoolManager()",
+							"    response = http.request('PUT', mywaithandle, body=json.dumps(data))",
+							"    print('Response code for PUT request : ',response.status)"
+							]
+						]
+					}
+				},
+				"Environment":{
+					"Variables":{
+						"URL":{
+							"Ref" : "ADDCodeCommitWaitHandle"
+						}
+					}
+				},
+				"Runtime": "python3.11"
+			}
+		},
+		
+		"ADDCodeCommitEventLambdaFunctionPersmission": {
+			"Type" : "AWS::Lambda::Permission",
+			"Properties" : {
+				"Action" : "lambda:InvokeFunction",
+				"FunctionName" : {
+					"Fn::GetAtt": [
+						"ADDCodeCommitEventLambdaFunction","Arn"
+					]
+				},
+				"Principal" : "*"
+			}
+		},
+
+		"ADDCodeBuildWaitHandle" : {
+			"Type" : "AWS::CloudFormation::WaitConditionHandle",
+			"Properties" : {
+			}
+		},
+		
+		"ADDCodeBuildWaitCondition" : {
+			"Type" : "AWS::CloudFormation::WaitCondition",
+			"Properties" : {
+				"Count" : 1,
+				"Handle" : { "Ref" : "ADDCodeBuildWaitHandle" },
+				"Timeout" : "4500"
+			}
+		},
+		
+		"ADDCodeBuildEventLambdaFunction": {
+			"Type": "AWS::Lambda::Function",
+			"Properties": {
+				"FunctionName": "addcodebuildlambdafunction",
+				"Handler": "index.lambda_handler",
+				"Role": { 
+					"Fn::GetAtt" : [
+						"ADDLambdaAdminRole", "Arn" 
+						]
+				},
+				"Code": {
+					"ZipFile": {
+						"Fn::Join": [
+							"\n",
+							[
+							"import boto3",
+							"import os",
+							"import urllib3",
+							"import json",
+							"def lambda_handler(event, context):",
+							"    mywaithandle = os.environ['URL']",
+							"    data = {'Status': 'SUCCESS', 'Reason': 'S3 object created', 'UniqueId': 'ID1234', 'Data': 'Wait signalled'}",
+							"    http = urllib3.PoolManager()",
+							"    response = http.request('PUT', mywaithandle, body=json.dumps(data))",
+							"    print('Response code for PUT request : ',response.status)"
+							]
+						]
+					}
+				},
+				"Environment":{
+					"Variables":{
+						"URL":{
+							"Ref" : "ADDCodeBuildWaitHandle"
+						}
+					}
+				},
+				"Runtime": "python3.11"
+			}
+		},
+		
+		"ADDCodeBuildEventLambdaFunctionPersmission": {
+			"Type" : "AWS::Lambda::Permission",
+			"Properties" : {
+				"Action" : "lambda:InvokeFunction",
+				"FunctionName" : {
+					"Fn::GetAtt": [
+						"ADDCodeBuildEventLambdaFunction","Arn"
+					]
+				},
+				"Principal" : "*"
+			}
+		},
+		
 		"ADDCodeBuildProject": {
 			"Type" : "AWS::CodeBuild::Project",
-			"DependsOn" : "ADDCodeCommitRepository",
+			"DependsOn" : "ADDS3Bucket",
 			"Properties" : {
 				"Name" : {
 					"Ref": "ADDCodeBuildProjectName"
@@ -838,6 +1005,7 @@
 
 		"ADDCodeDeployApp": {
 			"Type" : "AWS::CodeDeploy::Application",
+			"DependsOn": "ADDCodeBuildWaitCondition",
 			"Properties" : {
 				"ApplicationName" : {
 					"Ref": "ADDCodeDeployAppName"
@@ -914,6 +1082,7 @@
 
 		"ADDCodePipeline": {
 			"Type": "AWS::CodePipeline::Pipeline",
+			"DependsOn" : "ADDCodeDeploymentGroup",
 			"Properties":{
 				"ArtifactStore": {
 					"Location" : {
@@ -1028,6 +1197,7 @@
 		
 		"ADDLambdaFunction": {
 			"Type": "AWS::Lambda::Function",
+			"DependsOn" : "ADDCodeDeployApp",
 			"Properties": {
 				"FunctionName": {
 					"Ref" : "ADDLambdaFunctionName"
