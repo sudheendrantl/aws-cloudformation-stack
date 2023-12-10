@@ -2,7 +2,7 @@
 
     "AWSTemplateFormatVersion": "2010-09-09",
 
-    "Description": "Creates resources like EC2 (with userdata to update environment, install CodeDeploy agent), VPC, VPCGatewayAttachment, IG, Route, RouteTable, RouteTableAsscocation, Subnet, Security Group, Kinesis Data Stream, Dynamo, SNS topic, SNS Subscription, S3, application Lambda (taking source from S3), Lambda EventSourceMapping, WaitHandle, WaitCondition and the correponding lambda functions (with inline source in this template) with Lambda Persmission that wait until code is checked into the repository before creating CodeBuild and waits for build completion before stack creation is completed, CodeCommit, CodeBuild, CodeDeploy for application, CodeDeploymentGroup along with Deployment, Codepipeline, Admin Roles for various services used, their Role instances, EC2 Keypair etc for the application Anomaly Data Dectector(ADD)",
+    "Description": "Creates resources like EC2 (with userdata to update environment, install CodeDeploy agent), VPC, VPCGatewayAttachment, IG, Route, RouteTable, RouteTableAsscocation, Subnet, Security Group, Kinesis Data Stream, Dynamo, SNS topic, SNS Subscription, S3, application Lambda (taking source from S3), Lambda EventSourceMapping, WaitHandle, WaitCondition and the corresponding lambda functions (with inline source in this template) with Lambda Permission that wait until code is checked into the repository before creating CodeBuild and waits for build completion before stack creation is completed, CodeCommit, CodeBuild, CodeDeploy for application, CodeDeploymentGroup along with Deployment, Codepipeline, Admin Roles for various services used, their Role instances, EC2 Keypair etc for the application Anomaly Data Dectector(ADD)",
 
     "Parameters": {
 
